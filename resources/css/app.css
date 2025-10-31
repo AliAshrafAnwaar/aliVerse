@@ -5,102 +5,102 @@
 @layer base {
   :root {
     /* Light theme - Modern, clean portfolio colors */
-    --background: hsl(0, 0%, 100%);
-    --foreground: hsl(224, 71%, 4%);
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
     
-    --card: hsl(0, 0%, 100%);
-    --card-foreground: hsl(224, 71%, 4%);
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
     
-    --popover: hsl(0, 0%, 100%);
-    --popover-foreground: hsl(224, 71%, 4%);
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
     
     /* Primary: Modern blue-purple for CTAs */
-    --primary: hsl(262, 83%, 58%);
-    --primary-foreground: hsl(210, 40%, 98%);
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
     
     /* Secondary: Soft gray-blue */
-    --secondary: hsl(220, 14%, 96%);
-    --secondary-foreground: hsl(220, 9%, 46%);
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
     
     /* Muted: Subtle backgrounds */
-    --muted: hsl(220, 14%, 96%);
-    --muted-foreground: hsl(220, 9%, 46%);
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
     
     /* Accent: Vibrant cyan for highlights */
-    --accent: hsl(199, 89%, 48%);
-    --accent-foreground: hsl(0, 0%, 100%);
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
     
     /* Destructive: Clean red */
-    --destructive: hsl(0, 84%, 60%);
-    --destructive-foreground: hsl(0, 0%, 98%);
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
     
     /* Borders & inputs */
-    --border: hsl(220, 13%, 91%);
-    --input: hsl(220, 13%, 91%);
-    --ring: hsl(262, 83%, 58%);
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 262 83% 58%;
     
     --radius: 0.5rem;
     
     /* Success: Fresh green */
-    --success: hsl(142, 76%, 36%);
-    --success-foreground: hsl(0, 0%, 100%);
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
     
     /* Warning: Warm amber */
-    --warning: hsl(38, 92%, 50%);
-    --warning-foreground: hsl(0, 0%, 100%);
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
     
     /* Info: Cool blue */
-    --info: hsl(199, 89%, 48%);
-    --info-foreground: hsl(0, 0%, 100%);
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
     /* Dark theme - Deep, sophisticated portfolio colors */
-    --background: hsl(224, 71%, 4%);
-    --foreground: hsl(213, 31%, 91%);
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
     
-    --card: hsl(224, 63%, 8%);
-    --card-foreground: hsl(213, 31%, 91%);
+    --card: 224 63% 8%;
+    --card-foreground: 213 31% 91%;
     
-    --popover: hsl(224, 63%, 8%);
-    --popover-foreground: hsl(213, 31%, 91%);
+    --popover: 224 63% 8%;
+    --popover-foreground: 213 31% 91%;
     
     /* Primary: Brighter purple for dark mode */
-    --primary: hsl(263, 70%, 65%);
-    --primary-foreground: hsl(224, 71%, 4%);
+    --primary: 263 70% 65%;
+    --primary-foreground: 224 71% 4%;
     
     /* Secondary: Subtle dark gray */
-    --secondary: hsl(215, 28%, 17%);
-    --secondary-foreground: hsl(213, 31%, 91%);
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 213 31% 91%;
     
     /* Muted: Darker backgrounds */
-    --muted: hsl(215, 28%, 17%);
-    --muted-foreground: hsl(217, 11%, 65%);
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 11% 65%;
     
     /* Accent: Bright cyan for dark mode */
-    --accent: hsl(199, 89%, 58%);
-    --accent-foreground: hsl(224, 71%, 4%);
+    --accent: 199 89% 58%;
+    --accent-foreground: 224 71% 4%;
     
     /* Destructive: Softer red for dark */
-    --destructive: hsl(0, 63%, 55%);
-    --destructive-foreground: hsl(213, 31%, 91%);
+    --destructive: 0 63% 55%;
+    --destructive-foreground: 213 31% 91%;
     
     /* Borders & inputs */
-    --border: hsl(215, 28%, 17%);
-    --input: hsl(215, 28%, 17%);
-    --ring: hsl(263, 70%, 65%);
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 263 70% 65%;
     
     /* Success: Muted green for dark */
-    --success: hsl(142, 71%, 45%);
-    --success-foreground: hsl(224, 71%, 4%);
+    --success: 142 71% 45%;
+    --success-foreground: 224 71% 4%;
     
     /* Warning: Softer amber */
-    --warning: hsl(38, 92%, 60%);
-    --warning-foreground: hsl(224, 71%, 4%);
+    --warning: 38 92% 60%;
+    --warning-foreground: 224 71% 4%;
     
     /* Info: Bright blue */
-    --info: hsl(199, 89%, 58%);
-    --info-foreground: hsl(224, 71%, 4%);
+    --info: 199 89% 58%;
+    --info-foreground: 224 71% 4%;
   }
 }
 

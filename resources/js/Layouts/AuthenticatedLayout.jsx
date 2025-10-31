@@ -23,18 +23,21 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-foreground" />
+                                    <div className="flex">
+                                        <ApplicationLogo className="block h-8 w-auto fill-current text-foreground" />
+                                        <span className="font-bold text-xl ml-2 mt-3">Ali Ashraf</span>
+                                    </div>
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            {/* <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
                                 >
                                     {t('common.dashboard')}
                                 </NavLink>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center sm:space-x-3">
