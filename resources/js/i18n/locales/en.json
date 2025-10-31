@@ -1,0 +1,70 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "name": "Name",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "error": "An error occurred",
+    "success": "Success",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "services": "Services"
+  },
+  "auth": {
+    "login_title": "Login to your account",
+    "register_title": "Create a new account",
+    "forgot_password": "Forgot your password?",
+    "remember_me": "Remember me",
+    "already_registered": "Already registered?",
+    "not_registered": "Don't have an account?"
+  },
+  "dashboard": {
+    "welcome_message": "Welcome back, {{name}}!",
+    "overview": "Overview",
+    "recent_activity": "Recent Activity",
+    "quick_actions": "Quick Actions"
+  },
+  "profile": {
+    "edit_profile": "Edit Profile",
+    "update_password": "Update Password",
+    "profile_information": "Profile Information",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "delete_account": "Delete Account",
+    "account_settings": "Account Settings"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email_invalid": "Please enter a valid email address",
+    "password_min": "Password must be at least {{min}} characters",
+    "password_mismatch": "Passwords do not match"
+  }
+}

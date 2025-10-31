@@ -1,0 +1,70 @@
+{
+  "common": {
+    "welcome": "مرحبا",
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "name": "الاسم",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "search": "بحث",
+    "filter": "تصفية",
+    "actions": "الإجراءات",
+    "loading": "جاري التحميل...",
+    "no_data": "لا توجد بيانات",
+    "error": "حدث خطأ",
+    "success": "نجح",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "contact": "اتصل بنا",
+    "services": "الخدمات"
+  },
+  "auth": {
+    "login_title": "تسجيل الدخول إلى حسابك",
+    "register_title": "إنشاء حساب جديد",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "remember_me": "تذكرني",
+    "already_registered": "لديك حساب بالفعل؟",
+    "not_registered": "ليس لديك حساب؟"
+  },
+  "dashboard": {
+    "welcome_message": "مرحبًا بعودتك، {{name}}!",
+    "overview": "نظرة عامة",
+    "recent_activity": "النشاط الأخير",
+    "quick_actions": "إجراءات سريعة"
+  },
+  "profile": {
+    "edit_profile": "تعديل الملف الشخصي",
+    "update_password": "تحديث كلمة المرور",
+    "profile_information": "معلومات الملف الشخصي",
+    "current_password": "كلمة المرور الحالية",
+    "new_password": "كلمة المرور الجديدة",
+    "delete_account": "حذف الحساب",
+    "account_settings": "إعدادات الحساب"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "email_invalid": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "password_min": "يجب أن تكون كلمة المرور {{min}} أحرف على الأقل",
+    "password_mismatch": "كلمات المرور غير متطابقة"
+  }
+}
