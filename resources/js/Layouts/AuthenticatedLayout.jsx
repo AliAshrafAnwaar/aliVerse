@@ -24,7 +24,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
                                     <div className="flex items-center">
-                                        <ApplicationLogo className="" />
+                                        <ApplicationLogo className="h-12 w-12" />
                                         <span className="font-bold text-lg mx-2 ">{t('common.long_welcome')}</span>
                                     </div>
                                 </Link>
@@ -34,6 +34,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <NavLink href="/blog" active={false}>Blog</NavLink>
                                 <NavLink href="/portfolio" active={false}>Portfolio</NavLink>
                                 <NavLink href="/projects" active={false}>Projects</NavLink>
+                                <NavLink href="/books" active={false}>Books</NavLink>
                                 <NavLink href="/contact" active={false}>Contact</NavLink>
                             </div>
                         </div>
