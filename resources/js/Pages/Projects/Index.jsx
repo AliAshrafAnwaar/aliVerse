@@ -1,0 +1,193 @@
+import { Head, Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Badge } from '@/Components/ui/badge';
+import { Input } from '@/Components/ui/input';
+import { Checkbox } from '@/Components/ui/checkbox';
+import { Search, ExternalLink, Github, Star } from 'lucide-react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+
+export default function Index({ projects, filters }) {
+    const { t } = useTranslation();
+
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        const url = new URL(window.location);
+        
+        if (value) {
+            url.searchParams.set('search', value);
+        } else {
+            url.searchParams.delete('search');
+        }
+        
+        window.location.href = url.toString();
+    };
+
+    const handleFeaturedToggle = (checked) => {
+        const url = new URL(window.location);
+        
+        if (checked) {
+            url.searchParams.set('featured', '1');
+        } else {
+            url.searchParams.delete('featured');
+        }
+        
+        window.location.href = url.toString();
+    };
+
+    return (
+        <AuthenticatedLayout>
+            <Head title="Projects" />
+
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                            {t('projects.title', 'My Projects')}
+                        </h1>
+                        <p className="text-lg text-gray-600 dark:text-gray-400">
+                            {t('projects.description', 'A collection of my work and side projects')}
+                        </p>
+                    </div>
+
+                    {/* Filters */}
+                    <div className="mb-8 flex flex-col sm:flex-row gap-4">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                            <Input
+                                type="text"
+                                placeholder={t('projects.search_placeholder', 'Search projects...')}
+                                defaultValue={filters.search}
+                                onChange={handleSearch}
+                                className="pl-10"
+                            />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="featured"
+                                checked={!!filters.featured}
+                                onCheckedChange={handleFeaturedToggle}
+                            />
+                            <label
+                                htmlFor="featured"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                {t('projects.featured_only', 'Featured only')}
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Projects Grid */}
+                    {projects.data.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {projects.data.map((project) => (
+                                <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                                    <CardHeader>
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <CardTitle className="text-xl mb-2">
+                                                    <Link 
+                                                        href={route('projects.show', project.slug)}
+                                                        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                                    >
+                                                        {project.title}
+                                                    </Link>
+                                                </CardTitle>
+                                                {project.featured && (
+                                                    <Badge variant="secondary" className="mb-2">
+                                                        <Star className="h-3 w-3 mr-1" />
+                                                        {t('projects.featured', 'Featured')}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <CardDescription className="line-clamp-3">
+                                            {project.description}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {/* Technologies */}
+                                        {project.technologies && project.technologies.length > 0 && (
+                                            <div className="mb-4">
+                                                <div className="flex flex-wrap gap-1">
+                                                    {project.technologies.slice(0, 4).map((tech, index) => (
+                                                        <Badge key={index} variant="outline" className="text-xs">
+                                                            {tech}
+                                                        </Badge>
+                                                    ))}
+                                                    {project.technologies.length > 4 && (
+                                                        <Badge variant="outline" className="text-xs">
+                                                            +{project.technologies.length - 4}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Links */}
+                                        <div className="flex space-x-2">
+                                            <Link href={route('projects.show', project.slug)}>
+                                                <Button variant="default" size="sm">
+                                                    {t('projects.view_details', 'View Details')}
+                                                </Button>
+                                            </Link>
+                                            {project.demo_url && (
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={project.demo_url} target="_blank" rel="noopener noreferrer">
+                                                        <ExternalLink className="h-3 w-3 mr-1" />
+                                                        {t('projects.demo', 'Demo')}
+                                                    </a>
+                                                </Button>
+                                            )}
+                                            {project.github_url && (
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={project.github_url} target="_blank" rel="noopener noreferrer">
+                                                        <Github className="h-3 w-3 mr-1" />
+                                                        {t('projects.source', 'Source')}
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <div className="text-gray-500 dark:text-gray-400 mb-4">
+                                {t('projects.no_projects_found', 'No projects found')}
+                            </div>
+                            <Button variant="outline" onClick={() => window.location.href = route('projects.index')}>
+                                {t('projects.clear_filters', 'Clear Filters')}
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* Pagination */}
+                    {projects.links && projects.links.length > 3 && (
+                        <div className="mt-8 flex justify-center">
+                            <div className="flex space-x-1">
+                                {projects.links.map((link, index) => (
+                                    <Link
+                                        key={index}
+                                        href={link.url || '#'}
+                                        className={`px-3 py-2 text-sm rounded-md ${
+                                            link.active
+                                                ? 'bg-blue-600 text-white'
+                                                : link.url
+                                                ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
+                                        }`}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
