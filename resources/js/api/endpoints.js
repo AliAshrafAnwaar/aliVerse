@@ -78,6 +78,17 @@ const API_ENDPOINTS = {
         TOGGLE: (type, id) => `/${type}/${id}/reactions`,
         LIST: (type, id) => `/${type}/${id}/reactions`,
     },
+
+    // Contact
+    CONTACT: {
+        // Public routes
+        INDEX: '/contact',
+        // Admin routes
+        ADMIN: {
+            EDIT: '/admin/contact/edit',
+            UPDATE: '/admin/contact',
+        },
+    },
 };
 
 export default API_ENDPOINTS;

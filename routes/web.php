@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PostController;
@@ -28,6 +29,9 @@ Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projec
 Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
 Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
+// Public Contact Route
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+
 // Admin Project Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
@@ -48,6 +52,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/blog/{post}/toggle-featured', [PostController::class, 'toggleFeatured'])->name('posts.toggle-featured');
     Route::post('/blog/{post}/publish', [PostController::class, 'publish'])->name('posts.publish');
     Route::post('/blog/{post}/unpublish', [PostController::class, 'unpublish'])->name('posts.unpublish');
+
+    // Admin Contact Routes
+    Route::get('/contact/edit', [ContactController::class, 'edit'])->name('contact.edit');
+    Route::put('/contact', [ContactController::class, 'update'])->name('contact.update');
 });
 
 Route::middleware('auth')->group(function () {
