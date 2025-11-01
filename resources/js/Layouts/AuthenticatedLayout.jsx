@@ -23,24 +23,22 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <div className="flex">
-                                        <ApplicationLogo className="block h-8 w-auto fill-current text-foreground" />
-                                        <span className="font-bold text-xl ml-2 mt-3">Ali Ashraf</span>
+                                    <div className="flex items-center">
+                                        <ApplicationLogo className="" />
+                                        <span className="font-bold text-lg mx-2 ">{t('common.long_welcome')}</span>
                                     </div>
                                 </Link>
                             </div>
 
-                            {/* <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    {t('common.dashboard')}
-                                </NavLink>
-                            </div> */}
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href="/blog" active={false}>Blog</NavLink>
+                                <NavLink href="/portfolio" active={false}>Portfolio</NavLink>
+                                <NavLink href="/projects" active={false}>Projects</NavLink>
+                                <NavLink href="/contact" active={false}>Contact</NavLink>
+                            </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center sm:space-x-3">
+                        <div className="hidden sm:ms-6 sm:flex sm:items-center sm:gap-3">
                             <ThemeToggle />
                             <LanguageToggle />
                             <div className="relative ms-3">
@@ -87,7 +85,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="-me-2 flex items-center space-x-2 sm:hidden">
+                        <div className="-me-2 flex items-center gap-x-2 sm:hidden">
                             <ThemeToggle />
                             <LanguageToggle />
                             <button
@@ -139,12 +137,10 @@ export default function AuthenticatedLayout({ header, children }) {
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            {t('common.dashboard')}
-                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href="/blog">Blog</ResponsiveNavLink>
+                        <ResponsiveNavLink href="/portfolio">Portfolio</ResponsiveNavLink>
+                        <ResponsiveNavLink href="/projects">Projects</ResponsiveNavLink>
+                        <ResponsiveNavLink href="/contact">Contact</ResponsiveNavLink>
                     </div>
 
                     <div className="border-t border-border pb-1 pt-4">

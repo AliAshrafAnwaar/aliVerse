@@ -19,8 +19,8 @@ export default function LanguageToggle() {
             aria-label="Toggle language"
             title={`Switch to ${i18n.language === 'en' ? 'العربية' : 'English'}`}
         >
-            <Languages className="h-5 w-5" />
-            <span className="ml-1 text-xs font-semibold">
+            {/* <Languages className="h-5 w-5" /> */}
+            <span className="text-xs font-semibold">
                 {i18n.language.toUpperCase()}
             </span>
         </button>

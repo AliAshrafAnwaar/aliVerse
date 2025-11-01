@@ -1,6 +1,7 @@
 {
   "common": {
     "welcome": "مرحبا",
+    "long_welcome": "مرحبا في عالم علي",
     "dashboard": "لوحة التحكم",
     "profile": "الملف الشخصي",
     "logout": "تسجيل الخروج",

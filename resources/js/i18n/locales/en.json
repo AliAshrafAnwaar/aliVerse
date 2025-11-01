@@ -1,6 +1,7 @@
 {
   "common": {
     "welcome": "Welcome",
+    "long_welcome": "Welcome to Ali Ashraf's verse",
     "dashboard": "Dashboard",
     "profile": "Profile",
     "logout": "Logout",
