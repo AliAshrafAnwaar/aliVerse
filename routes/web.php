@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PostController;
@@ -8,18 +12,26 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+// Home route with role-based redirect
+Route::get('/', HomeController::class)->name('home.redirect');
+
+// Home page for regular users
+Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+
+Route::get('/welcome', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('welcome');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Admin dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+// User portfolio
+Route::get('/portfolio', [PortfolioController::class, 'index'])->middleware(['auth', 'verified'])->name('portfolio');
 
 // Public Project Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -32,8 +44,15 @@ Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.sh
 // Public Contact Route
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 
-// Admin Project Routes
+// Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    
+    // Admin Contact Routes
+    Route::get('/contact/edit', [ContactController::class, 'edit'])->name('contact.edit');
+    Route::put('/contact', [ContactController::class, 'update'])->name('contact.update');
+    
+    // Admin Project Routes
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -52,10 +71,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/blog/{post}/toggle-featured', [PostController::class, 'toggleFeatured'])->name('posts.toggle-featured');
     Route::post('/blog/{post}/publish', [PostController::class, 'publish'])->name('posts.publish');
     Route::post('/blog/{post}/unpublish', [PostController::class, 'unpublish'])->name('posts.unpublish');
-
-    // Admin Contact Routes
-    Route::get('/contact/edit', [ContactController::class, 'edit'])->name('contact.edit');
-    Route::put('/contact', [ContactController::class, 'update'])->name('contact.update');
 });
 
 Route::middleware('auth')->group(function () {

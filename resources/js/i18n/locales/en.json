@@ -35,9 +35,13 @@
   },
   "navigation": {
     "home": "Home",
+    "portfolio": "Portfolio",
+    "projects": "Projects",
+    "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "services": "Services"
+    "services": "Services",
+    "profile": "Profile"
   },
   "auth": {
     "login_title": "Login to your account",
@@ -61,6 +65,24 @@
     "new_password": "New Password",
     "delete_account": "Delete Account",
     "account_settings": "Account Settings"
+  },
+  "contact": {
+    "title": "Contact Me",
+    "subtitle": "Get in touch",
+    "description": "Feel free to reach out to me for any inquiries or collaborations.",
+    "send_message": "Send Message",
+    "name": "Your Name",
+    "email": "Your Email",
+    "subject": "Subject",
+    "message": "Message",
+    "phone": "Phone",
+    "location": "Location",
+    "website": "Website",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "instagram": "Instagram",
+    "facebook": "Facebook"
   },
   "validation": {
     "required": "This field is required",

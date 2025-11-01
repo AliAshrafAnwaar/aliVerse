@@ -16,7 +16,7 @@ import {
   Filter
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import ENDPOINTS from '@/api/endpoints';
 
 export default function AdminIndex({ auth, posts, categories, tags, filters }) {
@@ -57,11 +57,11 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
   };
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AdminLayout user={auth.user} header={t('blog.manage_posts')}>
       <Head title={t('blog.manage_posts')} />
 
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div className="py-0">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -293,6 +293,6 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
           )}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
   );
 }

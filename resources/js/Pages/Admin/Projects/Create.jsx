@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Badge } from '@/Components/ui/badge';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 
 export default function Create() {
     const { t } = useTranslation();
@@ -71,19 +71,13 @@ export default function Create() {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout header="Create Project">
             <Head title="Create Project" />
 
-            <div className="py-12">
-                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div className="py-3">
+                <div className="px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
-                        <Link href={route('admin.projects.index')}>
-                            <Button variant="ghost" className="mb-4">
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                {t('common.back_to_projects', 'Back to Projects')}
-                            </Button>
-                        </Link>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                             {t('projects.create_new', 'Create New Project')}
                         </h1>
@@ -359,6 +353,6 @@ export default function Create() {
                     </form>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }

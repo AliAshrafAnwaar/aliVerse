@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { ArrowLeft, Save, Eye, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import PostForm from '@/Components/Blog/PostForm';
 import ENDPOINTS from '@/api/endpoints';
 
@@ -41,26 +41,30 @@ export default function Edit({ auth, post, categories, tags }) {
   };
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AdminLayout user={auth.user} header={t('blog.edit_post', { title: post.title })}>
       <Head title={t('blog.edit_post', { title: post.title })} />
 
-      <div className="py-12">
-        <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
+      <div className="py-3">
+        <div className="px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <Link href="/admin/blog">
-                  <Button variant="outline" size="sm">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    {t('common.back')}
-                  </Button>
-                </Link>
+              <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   {t('blog.edit_post')}
                 </h1>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span>{t('blog.created_at', { date: new Date(post.created_at).toLocaleDateString() })}</span>
+                  <span>•</span>
+                  <span>{t('blog.updated_at', { date: new Date(post.updated_at).toLocaleDateString() })}</span>
+                  {post.published_at && (
+                    <>
+                      <span>•</span>
+                      <span>{t('blog.published_at', { date: new Date(post.published_at).toLocaleDateString() })}</span>
+                    </>
+                  )}
+                </div>
               </div>
-              
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -81,18 +85,6 @@ export default function Edit({ auth, post, categories, tags }) {
                   {t('common.delete')}
                 </Button>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>{t('blog.created_at', { date: new Date(post.created_at).toLocaleDateString() })}</span>
-              <span>•</span>
-              <span>{t('blog.updated_at', { date: new Date(post.updated_at).toLocaleDateString() })}</span>
-              {post.published_at && (
-                <>
-                  <span>•</span>
-                  <span>{t('blog.published_at', { date: new Date(post.published_at).toLocaleDateString() })}</span>
-                </>
-              )}
             </div>
           </div>
 
@@ -164,6 +156,6 @@ export default function Edit({ auth, post, categories, tags }) {
           </div>
         </div>
       </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
   );
 }

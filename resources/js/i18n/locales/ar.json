@@ -35,9 +35,13 @@
   },
   "navigation": {
     "home": "الرئيسية",
+    "portfolio": "معرض الأعمال",
+    "projects": "المشاريع",
+    "blog": "المدونة",
     "about": "من نحن",
     "contact": "اتصل بنا",
-    "services": "الخدمات"
+    "services": "الخدمات",
+    "profile": "الملف الشخصي"
   },
   "auth": {
     "login_title": "تسجيل الدخول إلى حسابك",
@@ -61,6 +65,24 @@
     "new_password": "كلمة المرور الجديدة",
     "delete_account": "حذف الحساب",
     "account_settings": "إعدادات الحساب"
+  },
+  "contact": {
+    "title": "تواصل معي",
+    "subtitle": "ابقى على تواصل",
+    "description": "لا تتردد في التواصل معي لأي استفسارات أو تعاون.",
+    "send_message": "إرسال رسالة",
+    "name": "اسمك",
+    "email": "بريدك الإلكتروني",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "phone": "الهاتف",
+    "location": "الموقع",
+    "website": "الموقع الإلكتروني",
+    "linkedin": "لينكدإن",
+    "github": "جيتهاب",
+    "twitter": "تويتر",
+    "instagram": "انستغرام",
+    "facebook": "فيسبوك"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",

@@ -13,6 +13,7 @@ class Project extends Model
     use HasFactory, Reactable, Viewable;
 
     protected $fillable = [
+        'user_id',
         'title',
         'slug',
         'description',
@@ -34,6 +35,11 @@ class Project extends Model
     ];
 
     protected $appends = ['thumbnail_url'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function images(): HasMany
     {

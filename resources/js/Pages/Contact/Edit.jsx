@@ -28,7 +28,7 @@ import {
   User
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import ENDPOINTS from '@/api/endpoints';
 
 export default function Edit({ auth, contact }) {
@@ -78,11 +78,11 @@ export default function Edit({ auth, contact }) {
 
   if (previewMode) {
     return (
-      <AuthenticatedLayout user={auth.user}>
+      <AdminLayout user={auth.user} header="Preview Contact Page">
         <Head title="Preview Contact Page" />
         
-        <div className="py-12">
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="py-0">
+          <div className="max-w-7xl mx-auto">
             <div className="mb-6">
               <Button onClick={() => setPreviewMode(false)} variant="outline">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -250,29 +250,26 @@ export default function Edit({ auth, contact }) {
             </Card>
           </div>
         </div>
-      </AuthenticatedLayout>
+      </AdminLayout>
     );
   }
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AdminLayout user={auth.user} header="Edit Contact Information">
       <Head title="Edit Contact Information" />
 
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div className="py-0">
+        <div className="">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <Link href="/admin">
-                  <Button variant="outline" size="sm">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    {t('common.back')}
-                  </Button>
-                </Link>
+              <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   Edit Contact Information
                 </h1>
+                <p className="text-muted-foreground">
+                  Manage your contact information and social media links
+                </p>
               </div>
               <div className="flex gap-2">
                 <Button onClick={handlePreview} variant="outline">
@@ -285,9 +282,6 @@ export default function Edit({ auth, contact }) {
                 </Button>
               </div>
             </div>
-            <p className="text-muted-foreground">
-              Manage your contact information and social media links
-            </p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -604,6 +598,6 @@ export default function Edit({ auth, contact }) {
           </form>
         </div>
       </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
   );
 }

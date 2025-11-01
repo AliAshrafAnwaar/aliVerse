@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import PostForm from '@/Components/Blog/PostForm';
 import ENDPOINTS from '@/api/endpoints';
 
@@ -27,24 +27,16 @@ export default function Create({ auth, categories, tags }) {
   };
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AdminLayout user={auth.user} header={t('blog.create_post')}>
       <Head title={t('blog.create_post')} />
 
-      <div className="py-12">
-        <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
+      <div className="py-3">
+        <div className="px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <Link href="/admin/blog">
-                <Button variant="outline" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t('common.back')}
-                </Button>
-              </Link>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t('blog.create_post')}
-              </h1>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {t('blog.create_post')}
+            </h1>
             <p className="text-muted-foreground">
               {t('blog.create_post_description')}
             </p>
@@ -71,6 +63,6 @@ export default function Create({ auth, categories, tags }) {
           </div>
         </div>
       </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
   );
 }

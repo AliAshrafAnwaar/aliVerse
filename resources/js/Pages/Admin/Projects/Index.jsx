@@ -6,7 +6,7 @@ import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Search, Plus, Edit, Trash2, Eye, ExternalLink, Github } from 'lucide-react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 
 export default function Index({ projects, filters }) {
     const { t } = useTranslation();
@@ -57,11 +57,11 @@ export default function Index({ projects, filters }) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AdminLayout header="Manage Projects">
             <Head title="Admin - Projects" />
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="py-0">
+                <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                         <div>
@@ -261,6 +261,6 @@ export default function Index({ projects, filters }) {
                     )}
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }
