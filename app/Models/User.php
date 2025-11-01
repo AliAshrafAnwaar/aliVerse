@@ -68,6 +68,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the posts created by this user.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Get the projects created by this user.
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    /**
+     * Get the comments created by this user.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
      * Get the user's avatar URL.
      */
     public function getAvatarUrlAttribute(): string

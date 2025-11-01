@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PostController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +24,10 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
 
+// Public Blog Routes
+Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
+Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.show');
+
 // Admin Project Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
@@ -32,6 +37,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    
+    // Admin Blog Routes
+    Route::get('/blog', [PostController::class, 'adminIndex'])->name('posts.index');
+    Route::get('/blog/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/blog', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/blog/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/blog/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/blog/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/blog/{post}/toggle-featured', [PostController::class, 'toggleFeatured'])->name('posts.toggle-featured');
+    Route::post('/blog/{post}/publish', [PostController::class, 'publish'])->name('posts.publish');
+    Route::post('/blog/{post}/unpublish', [PostController::class, 'unpublish'])->name('posts.unpublish');
 });
 
 Route::middleware('auth')->group(function () {

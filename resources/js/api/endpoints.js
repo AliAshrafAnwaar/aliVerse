@@ -34,15 +34,35 @@ const API_ENDPOINTS = {
         DELETE: (id) => `/projects/${id}`,
         UPLOAD_IMAGE: (id) => `/projects/${id}/images`,
         DELETE_IMAGE: (projectId, imageId) => `/projects/${projectId}/images/${imageId}`,
+        // Admin routes
+        ADMIN: {
+            LIST: '/admin/projects',
+            CREATE: '/admin/projects/create',
+            STORE: '/admin/projects',
+            VIEW: (id) => `/admin/projects/${id}`,
+            EDIT: (id) => `/admin/projects/${id}/edit`,
+            UPDATE: (id) => `/admin/projects/${id}`,
+            DELETE: (id) => `/admin/projects/${id}`,
+        },
     },
 
-    // Posts
+    // Blog Posts
     POSTS: {
-        LIST: '/posts',
-        CREATE: '/posts',
-        VIEW: (id) => `/posts/${id}`,
-        UPDATE: (id) => `/posts/${id}`,
-        DELETE: (id) => `/posts/${id}`,
+        // Public routes
+        LIST: '/blog',
+        VIEW: (slug) => `/blog/${slug}`,
+        // Admin routes
+        ADMIN: {
+            LIST: '/admin/blog',
+            CREATE: '/admin/blog/create',
+            STORE: '/admin/blog',
+            EDIT: (id) => `/admin/blog/${id}/edit`,
+            UPDATE: (id) => `/admin/blog/${id}`,
+            DELETE: (id) => `/admin/blog/${id}`,
+            TOGGLE_FEATURED: (id) => `/admin/blog/${id}/toggle-featured`,
+            PUBLISH: (id) => `/admin/blog/${id}/publish`,
+            UNPUBLISH: (id) => `/admin/blog/${id}/unpublish`,
+        },
     },
 
     // Comments
