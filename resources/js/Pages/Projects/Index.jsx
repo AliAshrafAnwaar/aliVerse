@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -10,6 +10,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function Index({ projects, filters }) {
     const { t } = useTranslation();
+    const user = usePage().props.auth.user;
 
     const handleSearch = (e) => {
         const value = e.target.value;
@@ -37,21 +38,12 @@ export default function Index({ projects, filters }) {
     };
 
     return (
-        <AuthenticatedLayout>
-            <Head title="Projects" />
+        <AuthenticatedLayout user={user} header={t('navigation.projects', 'Projects')}>
+            <Head title={t('navigation.projects', 'Projects')} />
 
-            <div className="py-12">
+            <div className="py-8">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                            {t('projects.title', 'My Projects')}
-                        </h1>
-                        <p className="text-lg text-gray-600 dark:text-gray-400">
-                            {t('projects.description', 'A collection of my work and side projects')}
-                        </p>
-                    </div>
-
+                    
                     {/* Filters */}
                     <div className="mb-8 flex flex-col sm:flex-row gap-4">
                         <div className="relative flex-1">

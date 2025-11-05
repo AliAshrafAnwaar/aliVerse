@@ -13,11 +13,11 @@ class PortfolioController extends Controller
      */
     public function index(Request $request)
     {
-        // Redirect admins to admin dashboard
-        if (Auth::user() && Auth::user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
+    //     // Redirect admins to admin dashboard
+    //     if (Auth::user() && Auth::user()->isAdmin()) {
+    //         return redirect()->route('admin.dashboard');
+    //     }
 
-        return Inertia::render('Portfolio');
+        return Inertia::render('Portfolio/Portfolio');
     }
 }

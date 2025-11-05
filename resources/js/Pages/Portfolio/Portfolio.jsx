@@ -15,28 +15,8 @@ export default function Portfolio() {
         <AuthenticatedLayout user={user} header={t('navigation.portfolio', 'Portfolio')}>
             <Head title={t('navigation.portfolio', 'Portfolio')} />
 
-            <div className="py-12">
+            <div className="py-8">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    {t('portfolio.title', 'My Portfolio')}
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-400 mt-2">
-                                    {t('portfolio.description', 'Welcome to your personal portfolio dashboard')}
-                                </p>
-                            </div>
-                            <Link href="/welcome">
-                                <Button variant="outline">
-                                    <ArrowLeft className="w-4 h-4 mr-2" />
-                                    {t('common.back_to_home', 'Back to Home')}
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-
                     {/* User Info Card */}
                     <Card className="mb-8">
                         <CardHeader>

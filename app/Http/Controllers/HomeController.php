@@ -15,15 +15,15 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         
-        // If user is admin, redirect to admin dashboard
-        if ($user && $user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
+        // // If user is admin, redirect to admin dashboard
+        // if ($user && $user->isAdmin()) {
+        //     return redirect()->route('admin.dashboard');
+        // }
         
         // If user is regular user, redirect to home
-        if ($user) {
+        // if ($user) {
             return redirect()->route('home');
-        }
+        // }
         
         // If not authenticated, redirect to welcome page
         return redirect()->route('welcome');
@@ -35,9 +35,9 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         // Redirect admins to admin dashboard
-        if (Auth::user() && Auth::user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
+        // if (Auth::user() && Auth::user()->isAdmin()) {
+        //     return redirect()->route('admin.dashboard');
+        // }
 
         return Inertia::render('Home');
     }

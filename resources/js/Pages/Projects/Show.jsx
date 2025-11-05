@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -9,9 +9,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function Show({ project }) {
     const { t } = useTranslation();
+    const user = usePage().props.auth.user;
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout user={user} header={project.title}>
             <Head title={project.title} />
 
             <div className="py-12">

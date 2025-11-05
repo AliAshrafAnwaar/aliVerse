@@ -42,7 +42,7 @@ class ContactController extends Controller
             ]
         );
 
-        return Inertia::render('Contact/Edit', [
+        return Inertia::render('Admin/Contact/Edit', [
             'contact' => $contact,
         ]);
     }

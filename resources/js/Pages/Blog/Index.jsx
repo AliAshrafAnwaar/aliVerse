@@ -45,33 +45,15 @@ export default function Index({ auth, posts, categories, tags, filters }) {
   };
 
   const hasActiveFilters = filters.search || filters.category || filters.status || filters.featured;
+  const activeFilterCount = Object.keys(filters).filter((key) => !!filters[key]).length;
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AuthenticatedLayout user={auth.user} header={t('blog.title')}>
       <Head title={t('blog.title')} />
 
-      <div className="py-12">
+      <div className="py-8">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t('blog.title')}
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                {t('blog.description')}
-              </p>
-            </div>
-            
-            {auth.user?.is_admin && (
-              <Link href={route('admin.posts.create')}>
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('blog.create_post')}
-                </Button>
-              </Link>
-            )}
-          </div>
+          
 
           {/* Search and Filters */}
           <Card className="mb-8">
@@ -117,7 +99,7 @@ export default function Index({ auth, posts, categories, tags, filters }) {
                   {t('common.filters')}
                   {hasActiveFilters && (
                     <Badge variant="secondary" className="ml-2">
-                      Object.keys(filters).filter(key => filters[key]).length
+                      {activeFilterCount}
                     </Badge>
                   )}
                 </Button>

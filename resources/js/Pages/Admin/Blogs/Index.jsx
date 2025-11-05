@@ -179,7 +179,7 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
                           {t('blog.title')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          {t('blog.status')}
+                          {t('blog.status.status')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           {t('blog.author')}

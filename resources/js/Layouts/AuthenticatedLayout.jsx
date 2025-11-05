@@ -24,14 +24,14 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <div className="flex items-center">
-                                        <ApplicationLogo className="h-12 w-12" />
-                                        <span className="font-bold text-lg mx-2 ">{t('common.long_welcome')}</span>
+                                    <div className="flex items-center gap-2">
+                                        <ApplicationLogo className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0" />
+                                        <span className="font-bold text-sm sm:text-lg truncate max-w-[120px] sm:max-w-none">{t('common.long_welcome')}</span>
                                     </div>
                                 </Link>
                             </div>
 
-                            <div className="hidden sm:ms-6 sm:flex sm:space-x-8">
+                            <div className="hidden lg:ms-6 lg:flex lg:space-x-4 xl:space-x-8">
                                 <NavLink href={route('home')} active={route().current('home')}>
                                     {t('navigation.home')}
                                 </NavLink>
@@ -50,19 +50,20 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="flex items-center">
-                            <div className="ms-3 relative">
+                        <div className="flex items-center gap-1 sm:gap-2">
+                            <div className="hidden sm:block">
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
+                                                className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {user.name}
+                                                <span className="hidden md:inline">{user.name}</span>
+                                                <span className="md:hidden">{user.name.split(' ')[0]}</span>
 
                                                 <svg
-                                                    className="ms-2 -me-1 h-4 w-4"
+                                                    className="ms-1 sm:ms-2 -me-1 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -88,12 +89,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </Dropdown>
                             </div>
 
-                            <div className="ms-3 flex items-center gap-2">
+                            <div className="hidden sm:flex items-center gap-1 sm:gap-2">
                                 <ThemeToggle />
                                 <LanguageToggle />
                             </div>
 
-                            <div className="-me-2 flex items-center sm:hidden">
+                            <div className="-me-2 flex items-center lg:hidden">
                                 <button
                                     onClick={() =>
                                         setShowingNavigationDropdown(
@@ -108,7 +109,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         fill="none"
                                         viewBox="0 0 24 24"
                                     >
-                                        {"showingNavigationDropdown" ? (
+                                        {showingNavigationDropdown ? (
                                             <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
@@ -133,7 +134,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div
                     className={
                         (showingNavigationDropdown ? "block" : "hidden") +
-                        " sm:hidden"
+                        " lg:hidden"
                     }
                 >
                     <div className="pt-2 pb-3 space-y-1">
@@ -159,7 +160,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="font-medium text-base text-gray-800 dark:text-gray-200">
                                 {user.name}
                             </div>
-                            <div className="font-medium text-sm text-gray-500 dark:text-gray-400">
+                            <div className="font-medium text-sm text-gray-500 dark:text-gray-400 break-all">
                                 {user.email}
                             </div>
                         </div>
@@ -175,6 +176,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             >
                                 {t('auth.logout')}
                             </ResponsiveNavLink>
+                        </div>
+
+                        {/* Mobile Theme and Language Toggles */}
+                        <div className="mt-3 px-4 flex items-center gap-2 sm:hidden">
+                            <ThemeToggle />
+                            <LanguageToggle />
                         </div>
                     </div>
                 </div>

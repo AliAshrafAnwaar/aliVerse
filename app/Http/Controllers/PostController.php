@@ -78,7 +78,7 @@ class PostController extends Controller
         $categories = Category::orderBy('name')->get();
         $tags = Tag::orderBy('name')->get();
 
-        return Inertia::render('Blog/Admin/Index', [
+        return Inertia::render('Admin/Blogs/Index', [
             'posts' => $posts,
             'categories' => $categories,
             'tags' => $tags,
@@ -96,7 +96,7 @@ class PostController extends Controller
         $categories = Category::orderBy('name')->get();
         $tags = Tag::orderBy('name')->get();
 
-        return Inertia::render('Blog/Create', [
+        return Inertia::render('Admin/Blogs/Create', [
             'categories' => $categories,
             'tags' => $tags,
         ]);
@@ -185,7 +185,7 @@ class PostController extends Controller
         $categories = Category::orderBy('name')->get();
         $tags = Tag::orderBy('name')->get();
 
-        return Inertia::render('Blog/Edit', [
+        return Inertia::render('Admin/Blogs/Edit', [
             'post' => $post,
             'categories' => $categories,
             'tags' => $tags,

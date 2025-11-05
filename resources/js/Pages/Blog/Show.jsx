@@ -73,7 +73,7 @@ export default function Show({ auth, post, relatedPosts }) {
   };
 
   return (
-    <AuthenticatedLayout user={auth.user}>
+    <AuthenticatedLayout user={auth.user} header={post.title}>
       <Head title={post.title} />
 
       <div className="py-12">

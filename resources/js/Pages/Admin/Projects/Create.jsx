@@ -19,6 +19,8 @@ export default function Create() {
         description: '',
         content: '',
         image: null,
+        gallery_images: [],
+        gallery_alt_texts: [],
         demo_url: '',
         github_url: '',
         technologies: [],
@@ -29,6 +31,37 @@ export default function Create() {
 
     const handleImageChange = (e) => {
         setData('image', e.target.files[0]);
+    };
+
+    const handleGalleryImagesChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newGalleryImages = [...data.gallery_images, ...files];
+        const newAltTexts = [...data.gallery_alt_texts, ...files.map(() => '')];
+        
+        if (newGalleryImages.length > 10) {
+            alert(t('projects.max_gallery_images', 'Maximum 10 gallery images allowed'));
+            return;
+        }
+        
+        setData(prevData => ({
+            ...prevData,
+            gallery_images: newGalleryImages,
+            gallery_alt_texts: newAltTexts
+        }));
+    };
+
+    const handleRemoveGalleryImage = (index) => {
+        setData(prevData => ({
+            ...prevData,
+            gallery_images: prevData.gallery_images.filter((_, i) => i !== index),
+            gallery_alt_texts: prevData.gallery_alt_texts.filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleAltTextChange = (index, value) => {
+        const newAltTexts = [...data.gallery_alt_texts];
+        newAltTexts[index] = value;
+        setData('gallery_alt_texts', newAltTexts);
     };
 
     const handleTechnologyAdd = (e) => {
@@ -168,7 +201,8 @@ export default function Create() {
                                         {t('projects.media_description', 'Project image and visual assets')}
                                     </CardDescription>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-6">
+                                    {/* Thumbnail Image */}
                                     <div>
                                         <Label htmlFor="image">{t('projects.thumbnail', 'Thumbnail Image')}</Label>
                                         <div className="mt-1 flex items-center space-x-4">
@@ -197,6 +231,59 @@ export default function Create() {
                                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                             {t('projects.image_help', 'JPEG, PNG, JPG, GIF or WebP. Max 2MB.')}
                                         </p>
+                                    </div>
+
+                                    {/* Gallery Images */}
+                                    <div>
+                                        <Label htmlFor="gallery_images">{t('projects.gallery_images', 'Gallery Images')}</Label>
+                                        <div className="mt-1">
+                                            <Input
+                                                id="gallery_images"
+                                                type="file"
+                                                accept="image/*"
+                                                multiple
+                                                onChange={handleGalleryImagesChange}
+                                                className="mt-1"
+                                                disabled={data.gallery_images.length >= 10}
+                                            />
+                                            {errors.gallery_images && (
+                                                <p className="text-red-500 text-sm mt-1">{errors.gallery_images}</p>
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                            {t('projects.gallery_help', 'Upload multiple images for gallery. Max 10 images, 2MB each.')}
+                                        </p>
+                                        
+                                        {/* Gallery Images Preview */}
+                                        {data.gallery_images.length > 0 && (
+                                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                                {data.gallery_images.map((image, index) => (
+                                                    <div key={index} className="relative group">
+                                                        <img
+                                                            src={URL.createObjectURL(image)}
+                                                            alt={`Gallery ${index + 1}`}
+                                                            className="w-full h-32 object-cover rounded-lg"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveGalleryImage(index)}
+                                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </button>
+                                                        <div className="mt-2">
+                                                            <Input
+                                                                type="text"
+                                                                placeholder={t('projects.alt_text', 'Alt text (optional)')}
+                                                                value={data.gallery_alt_texts[index] || ''}
+                                                                onChange={(e) => handleAltTextChange(index, e.target.value)}
+                                                                className="text-sm"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
