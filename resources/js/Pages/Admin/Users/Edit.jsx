@@ -3,7 +3,7 @@ import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Checkbox } from '@/Components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Separator } from '@/Components/ui/separator';
 import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react';
@@ -20,7 +20,7 @@ export default function AdminUsersEdit({ auth, user }) {
     email: user.email,
     password: '',
     password_confirmation: '',
-    is_admin: user.is_admin,
+    role: user.role || 'user',
   });
 
   const handleSubmit = (e) => {
@@ -182,20 +182,28 @@ export default function AdminUsersEdit({ auth, user }) {
 
                     <Separator />
 
-                    {/* Permissions */}
+                    {/* Role Selection */}
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium">{t('users.permissions')}</h3>
                       
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="is_admin"
-                          checked={data.is_admin}
-                          onCheckedChange={(checked) => setData('is_admin', checked)}
+                      <div className="space-y-2">
+                        <Label htmlFor="role">{t('users.role')}</Label>
+                        <Select
+                          value={data.role}
+                          onValueChange={(value) => setData('role', value)}
                           disabled={user.id === auth.user.id}
-                        />
-                        <Label htmlFor="is_admin" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          {t('users.is_admin')}
-                        </Label>
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder={t('users.filter_role')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="user">{t('users.user')}</SelectItem>
+                            <SelectItem value="admin">{t('users.admin')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {errors.role && (
+                          <p className="text-sm text-red-600">{errors.role}</p>
+                        )}
                       </div>
                       {user.id === auth.user.id && (
                         <p className="text-sm text-muted-foreground">

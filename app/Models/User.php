@@ -21,7 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
         'avatar',
         'bio',
         'location',
@@ -30,6 +29,13 @@ class User extends Authenticatable
         'linkedin_url',
         'twitter_url',
     ];
+    
+    /**
+     * The attributes that are guarded from mass assignment.
+     *
+     * @var array<string>
+     */
+    protected $guarded = ['role', 'email_verified_at'];
 
     /**
      * The attributes that should be hidden for serialization.
