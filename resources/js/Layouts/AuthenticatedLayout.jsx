@@ -35,7 +35,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <NavLink href={route('home')} active={route().current('home')}>
                                     {t('navigation.home')}
                                 </NavLink>
-                                <NavLink href={route('portfolio')} active={route().current('portfolio')}>
+                                <NavLink href={route('portfolio.show')} active={route().current('portfolio.show')}>
                                     {t('navigation.portfolio')}
                                 </NavLink>
                                 <NavLink href={route('projects.index')} active={route().current('projects.index')}>
@@ -141,7 +141,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <ResponsiveNavLink href={route('home')}>
                             {t('navigation.home')}
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('portfolio')}>
+                        <ResponsiveNavLink href={route('portfolio.show')}>
                             {t('navigation.portfolio')}
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('projects.index')}>

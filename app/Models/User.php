@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'bio',
+        'position',
         'location',
         'website',
         'github_url',
@@ -110,7 +111,7 @@ class User extends Authenticatable
      */
     public function getProfileCompletionAttribute(): int
     {
-        $fields = ['avatar', 'bio', 'location', 'website', 'github_url', 'linkedin_url', 'twitter_url'];
+        $fields = ['avatar', 'bio', 'position', 'location', 'website', 'github_url', 'linkedin_url', 'twitter_url'];
         $completed = 0;
         
         foreach ($fields as $field) {

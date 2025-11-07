@@ -5,7 +5,7 @@ import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Github, Linkedin, Twitter, Globe, MapPin, FileText } from 'lucide-react';
+import { Github, Linkedin, Twitter, Globe, MapPin, FileText, Briefcase } from 'lucide-react';
 import { profileService } from '@/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,6 +36,7 @@ export default function ProfileSocialSection({ user }) {
 
     const { data, setData, processing, errors, clearErrors, setError } = useForm({
         bio: user.bio || '',
+        position: user.position || '',
         location: user.location || '',
         website: user.website || '',
         github_url: user.github_url || '',
@@ -107,6 +108,24 @@ export default function ProfileSocialSection({ user }) {
                         </p>
                         {errors.bio && (
                             <p className="text-sm text-red-600">{errors.bio}</p>
+                        )}
+                    </div>
+
+                    {/* Position */}
+                    <div className="space-y-2">
+                        <Label htmlFor="position" className="flex items-center gap-2">
+                            <Briefcase className="h-4 w-4" />
+                            {t('profile.social.position', 'Position')}
+                        </Label>
+                        <Input
+                            id="position"
+                            value={data.position}
+                            onChange={(e) => setData('position', e.target.value)}
+                            placeholder={t('profile.social.position_placeholder', 'e.g., Full Stack Developer')}
+                            className={errors.position ? 'border-red-500' : ''}
+                        />
+                        {errors.position && (
+                            <p className="text-sm text-red-600">{errors.position}</p>
                         )}
                     </div>
 

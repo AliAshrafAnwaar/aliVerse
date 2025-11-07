@@ -20,7 +20,11 @@ import {
   User,
   Moon,
   Sun,
-  Globe
+  Globe,
+  Briefcase,
+  GraduationCap,
+  MessageSquare,
+  Wrench
 } from 'lucide-react';
 import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
@@ -85,6 +89,34 @@ export default function AdminLayout({ header, children }) {
       current: route().current('admin.posts.*'),
     },
     {
+      name: t('navigation.portfolio'),
+      href: '/admin/skills',
+      icon: Briefcase,
+      current: route().current('admin.skills.*') || route().current('admin.experiences.*') || route().current('admin.educations.*') || route().current('admin.testimonials.*'),
+      subItems: [
+        {
+          name: t('navigation.skills'),
+          href: '/admin/skills',
+          current: route().current('admin.skills.*'),
+        },
+        {
+          name: t('navigation.experiences'),
+          href: '/admin/experiences',
+          current: route().current('admin.experiences.*'),
+        },
+        {
+          name: t('navigation.education'),
+          href: '/admin/educations',
+          current: route().current('admin.educations.*'),
+        },
+        {
+          name: t('navigation.testimonials'),
+          href: '/admin/testimonials',
+          current: route().current('admin.testimonials.*'),
+        },
+      ],
+    },
+    {
       name: t('navigation.users'),
       href: '/admin/users',
       icon: Users,
@@ -145,6 +177,24 @@ export default function AdminLayout({ header, children }) {
                         <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
                         {item.name}
                       </Link>
+                      {item.subItems && (
+                        <ul role="list" className="mt-1 ml-9 space-y-1">
+                          {item.subItems.map((sub) => (
+                            <li key={sub.name}>
+                              <Link
+                                href={sub.href}
+                                className={`block rounded-md px-2 py-1 text-sm font-medium transition-colors ${
+                                  sub.current
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                                }`}
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -295,6 +345,24 @@ export default function AdminLayout({ header, children }) {
                         <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
                         {!sidebarCollapsed && item.name}
                       </Link>
+                      {!sidebarCollapsed && item.subItems && (
+                        <ul role="list" className="mt-1 ml-9 space-y-1">
+                          {item.subItems.map((sub) => (
+                            <li key={sub.name}>
+                              <Link
+                                href={sub.href}
+                                className={`block rounded-md px-2 py-1 text-sm font-medium transition-colors ${
+                                  sub.current
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                                }`}
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ul>

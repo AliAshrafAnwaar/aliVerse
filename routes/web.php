@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
@@ -33,6 +37,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 
 // User portfolio
 Route::get('/portfolio', [PortfolioController::class, 'index'])->middleware(['auth', 'verified'])->name('portfolio');
+Route::get('/portfolio/show', [PortfolioController::class, 'show'])->middleware(['auth', 'verified'])->name('portfolio.show');
 
 // Public Project Routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -81,6 +86,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/{user}/toggle-admin', [UsersController::class, 'toggleAdmin'])->name('users.toggle-admin');
     Route::post('/users/{user}/toggle-ban', [UsersController::class, 'toggleBan'])->name('users.toggle-ban');
+    
+    // Admin Portfolio Management Routes
+    Route::resource('skills', SkillController::class);
+    Route::resource('experiences', ExperienceController::class);
+    Route::resource('educations', EducationController::class);
+    Route::resource('testimonials', TestimonialController::class);
 });
 
 Route::middleware('auth')->group(function () {
