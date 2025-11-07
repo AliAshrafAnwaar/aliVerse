@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -21,13 +22,13 @@ class UsersController extends Controller
                       ->orWhere('email', 'like', "%{$search}%");
             })
             ->when($request->role, function ($query, $role) {
-                $query->where('is_admin', $role === 'admin');
+                $query->where('role', $role);
             })
             ->when($request->status, function ($query, $status) {
                 if ($status === 'active') {
-                    $query->where('email_verified_at', '!=', null);
-                } elseif ($status === 'inactive') {
-                    $query->where('email_verified_at', null);
+                    $query->whereNotNull('email_verified_at');
+                } elseif ($status === 'banned') {
+                    $query->whereNull('email_verified_at');
                 }
             })
             ->latest()
@@ -65,25 +66,12 @@ class UsersController extends Controller
     /**
      * Update the specified user in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'password' => 'nullable|string|min:8|confirmed',
-            'is_admin' => 'required|boolean',
-        ]);
+        $data = $request->validated();
 
-        // Only update password if provided
-        if (empty($data['password'])) {
-            unset($data['password']);
-        } else {
+        // Hash password if provided
+        if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
 
@@ -121,9 +109,10 @@ class UsersController extends Controller
             return back()->with('error', 'You cannot change your own admin status.');
         }
 
-        $user->update(['is_admin' => !$user->is_admin]);
+        $newRole = $user->role === 'admin' ? 'user' : 'admin';
+        $user->update(['role' => $newRole]);
 
-        return back()->with('success', 'User admin status updated!');
+        return back()->with('success', 'User role updated successfully!');
     }
 
     /**
