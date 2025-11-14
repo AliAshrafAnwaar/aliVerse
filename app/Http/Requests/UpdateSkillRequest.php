@@ -25,7 +25,7 @@ class UpdateSkillRequest extends FormRequest
             'name' => 'sometimes|required|string|max:255',
             'category' => 'sometimes|required|in:frontend,backend,tools,soft_skills',
             'proficiency_level' => 'sometimes|required|integer|min:1|max:10',
-            'icon' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,avif,gif|max:5120',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
         ];

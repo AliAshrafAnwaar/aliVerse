@@ -64,13 +64,17 @@ export default function Show({ skill }) {
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4">
-                                            <div className="h-16 w-16 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                                {skill.icon ? (
-                                                    <span className="text-2xl">{skill.icon}</span>
-                                                ) : (
+                                            {skill.image_url ? (
+                                                <img
+                                                    src={skill.image_url}
+                                                    alt={skill.name}
+                                                    className="h-16 w-16 rounded-lg object-cover"
+                                                />
+                                            ) : (
+                                                <div className="h-16 w-16 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                                                     <span className="text-2xl">🛠️</span>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
                                             <div>
                                                 <CardTitle className="text-2xl">{skill.name}</CardTitle>
                                                 <CardDescription className="mt-1">

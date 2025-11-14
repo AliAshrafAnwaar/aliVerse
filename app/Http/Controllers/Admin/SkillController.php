@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSkillRequest;
 use App\Http\Requests\UpdateSkillRequest;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class SkillController extends Controller
@@ -41,7 +42,14 @@ class SkillController extends Controller
 
     public function store(StoreSkillRequest $request)
     {
-        Skill::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('skills', 'public');
+            $data['image_path'] = $path;
+        }
+
+        Skill::create($data);
 
         return redirect()->route('admin.skills.index')
             ->with('success', 'Skill created successfully.');
@@ -64,7 +72,24 @@ class SkillController extends Controller
 
     public function update(UpdateSkillRequest $request, Skill $skill)
     {
-        $skill->update($request->validated());
+        $data = $request->validated();
+
+        \Log::info('Updating skill: ' . $skill->id, $data);
+
+        if ($request->hasFile('image')) {
+            // delete old image if exists
+            if ($skill->image_path && Storage::disk('public')->exists($skill->image_path)) {
+                \Log::info('Deleting old image: ' . $skill->image_path);
+                Storage::disk('public')->delete($skill->image_path);
+            }
+            $path = $request->file('image')->store('skills', 'public');
+            $data['image_path'] = $path;
+            \Log::info('Uploading new image: ' . $path);
+        }
+
+        $skill->update($data);
+
+        \Log::info('Skill updated successfully.');
 
         return redirect()->route('admin.skills.index')
             ->with('success', 'Skill updated successfully.');
@@ -72,6 +97,9 @@ class SkillController extends Controller
 
     public function destroy(Skill $skill)
     {
+        if ($skill->image_path && Storage::disk('public')->exists($skill->image_path)) {
+            Storage::disk('public')->delete($skill->image_path);
+        }
         $skill->delete();
 
         return redirect()->route('admin.skills.index')

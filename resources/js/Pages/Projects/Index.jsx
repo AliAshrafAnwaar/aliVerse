@@ -73,13 +73,48 @@ export default function Index({ projects, filters }) {
 
                     {/* Projects Grid */}
                     {projects.data.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {projects.data.map((project) => (
-                                <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                                    <CardHeader>
+                                <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                                    {/* Project Image */}
+                                    <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20">
+                                        <img
+                                            src={project.thumbnail_url || '/images/default-project.png'}
+                                            alt={project.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        {/* Overlay on hover */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                            <div className="flex gap-2">
+                                                {project.demo_url && (
+                                                    <div className="px-3 py-1 bg-white/90 rounded-full text-xs font-medium flex items-center gap-1">
+                                                        <ExternalLink className="w-3 h-3" />
+                                                        Live Demo
+                                                    </div>
+                                                )}
+                                                {project.github_url && (
+                                                    <div className="px-3 py-1 bg-white/90 rounded-full text-xs font-medium flex items-center gap-1">
+                                                        <Github className="w-3 h-3" />
+                                                        Code
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {/* Featured Badge */}
+                                        {project.featured && (
+                                            <div className="absolute top-3 right-3">
+                                                <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white border-0">
+                                                    <Star className="w-3 h-3 mr-1 fill-white" />
+                                                    Featured
+                                                </Badge>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <CardHeader className="pb-3">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
-                                                <CardTitle className="text-xl mb-2">
+                                                <CardTitle className="text-xl mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                     <Link 
                                                         href={route('projects.show', project.slug)}
                                                         className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -87,31 +122,25 @@ export default function Index({ projects, filters }) {
                                                         {project.title}
                                                     </Link>
                                                 </CardTitle>
-                                                {project.featured && (
-                                                    <Badge variant="secondary" className="mb-2">
-                                                        <Star className="h-3 w-3 mr-1" />
-                                                        {t('projects.featured', 'Featured')}
-                                                    </Badge>
-                                                )}
                                             </div>
                                         </div>
-                                        <CardDescription className="line-clamp-3">
+                                        <CardDescription className="line-clamp-2">
                                             {project.description}
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="pt-0">
                                         {/* Technologies */}
                                         {project.technologies && project.technologies.length > 0 && (
                                             <div className="mb-4">
                                                 <div className="flex flex-wrap gap-1">
-                                                    {project.technologies.slice(0, 4).map((tech, index) => (
-                                                        <Badge key={index} variant="outline" className="text-xs">
+                                                    {project.technologies.slice(0, 3).map((tech, index) => (
+                                                        <Badge key={index} variant="secondary" className="text-xs">
                                                             {tech}
                                                         </Badge>
                                                     ))}
-                                                    {project.technologies.length > 4 && (
+                                                    {project.technologies.length > 3 && (
                                                         <Badge variant="outline" className="text-xs">
-                                                            +{project.technologies.length - 4}
+                                                            +{project.technologies.length - 3}
                                                         </Badge>
                                                     )}
                                                 </div>
@@ -121,26 +150,10 @@ export default function Index({ projects, filters }) {
                                         {/* Links */}
                                         <div className="flex space-x-2">
                                             <Link href={route('projects.show', project.slug)}>
-                                                <Button variant="default" size="sm">
+                                                <Button variant="default" size="sm" className="flex-1">
                                                     {t('projects.view_details', 'View Details')}
                                                 </Button>
                                             </Link>
-                                            {project.demo_url && (
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a href={project.demo_url} target="_blank" rel="noopener noreferrer">
-                                                        <ExternalLink className="h-3 w-3 mr-1" />
-                                                        {t('projects.demo', 'Demo')}
-                                                    </a>
-                                                </Button>
-                                            )}
-                                            {project.github_url && (
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a href={project.github_url} target="_blank" rel="noopener noreferrer">
-                                                        <Github className="h-3 w-3 mr-1" />
-                                                        {t('projects.source', 'Source')}
-                                                    </a>
-                                                </Button>
-                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>

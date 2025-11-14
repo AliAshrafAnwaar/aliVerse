@@ -5,7 +5,7 @@ import { usePage } from '@inertiajs/react';
 import ProfileIntroduction from '@/Components/Portfolio/ProfileIntroduction';
 import SkillsSection from '@/Components/Portfolio/SkillsSection';
 import ExperienceSection from '@/Components/Portfolio/ExperienceSection';
-import ProjectsSection from '@/Components/Portfolio/ProjectsSection';
+import ModernProjectsSection from '@/Components/Portfolio/ModernProjectsSection';
 import EducationSection from '@/Components/Portfolio/EducationSection';
 import TestimonialsSection from '@/Components/Portfolio/TestimonialsSection';
 
@@ -48,7 +48,7 @@ export default function PortfolioShow({
 
                     {/* Projects Section */}
                     {projects && projects.length > 0 && (
-                        <ProjectsSection projects={projects} featuredProjects={featuredProjects} />
+                        <ModernProjectsSection projects={projects} featuredProjects={featuredProjects} />
                     )}
 
                     {/* Education Section */}

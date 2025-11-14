@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Skill extends Model
 {
@@ -11,6 +12,7 @@ class Skill extends Model
         'category',
         'proficiency_level',
         'icon',
+        'image_path',
         'is_featured',
         'sort_order',
     ];
@@ -19,6 +21,10 @@ class Skill extends Model
         'proficiency_level' => 'integer',
         'is_featured' => 'boolean',
         'sort_order' => 'integer',
+    ];
+
+    protected $appends = [
+        'image_url',
     ];
 
     public function scopeByCategory($query, $category)
@@ -34,5 +40,16 @@ class Skill extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('name');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image_path) {
+            return null;
+        }
+        if (str_starts_with($this->image_path, 'http://') || str_starts_with($this->image_path, 'https://')) {
+            return $this->image_path;
+        }
+        return Storage::url($this->image_path);
     }
 }

@@ -147,10 +147,8 @@ export default function Index({ skills, filters, categories }) {
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center">
                                                         <div className="flex-shrink-0 h-10 w-10">
-                                                            {skill.icon ? (
-                                                                <div className="h-10 w-10 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                                                    <span className="text-lg">{skill.icon}</span>
-                                                                </div>
+                                                            {skill.image_url ? (
+                                                                <img src={skill.image_url} alt={skill.name} className="h-10 w-10 rounded-lg object-cover" />
                                                             ) : (
                                                                 <div className="h-10 w-10 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                                                                     <span className="text-xs text-gray-500 dark:text-gray-400">🛠️</span>

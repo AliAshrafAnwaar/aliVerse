@@ -12,18 +12,20 @@ import AdminLayout from '@/Layouts/AdminLayout';
 
 export default function Edit({ skill, categories }) {
     const { t } = useTranslation();
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: skill.name || '',
         category: skill.category || '',
         proficiency_level: skill.proficiency_level || 5,
-        icon: skill.icon || '',
+        image: null,
         is_featured: skill.is_featured || false,
         sort_order: skill.sort_order || 0,
+        _method: 'PUT',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('admin.skills.update', skill.id));
+        // Submit via POST with method spoofing; Inertia will build FormData because of file
+        post(route('admin.skills.update', skill.id), { forceFormData: true, preserveScroll: true });
     };
 
     return (
@@ -123,21 +125,22 @@ export default function Edit({ skill, categories }) {
                                     )}
                                 </div>
 
-                                {/* Icon */}
+                                {/* Image */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="icon">{t('skills.icon', 'Icon')}</Label>
+                                    <Label htmlFor="image">{t('skills.image', 'Image')}</Label>
+                                    {skill.image_url && (
+                                        <div className="mb-2">
+                                            <img src={skill.image_url} alt={skill.name} className="h-16 w-16 object-cover rounded" />
+                                        </div>
+                                    )}
                                     <Input
-                                        id="icon"
-                                        type="text"
-                                        value={data.icon}
-                                        onChange={(e) => setData('icon', e.target.value)}
-                                        placeholder={t('skills.icon_placeholder', 'e.g., ⚛️, 🐍, 🐳')}
+                                        id="image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('image', e.target.files?.[0] || null)}
                                     />
-                                    <p className="text-sm text-gray-500">
-                                        {t('skills.icon_description', 'Use an emoji or icon class')}
-                                    </p>
-                                    {errors.icon && (
-                                        <p className="text-sm text-red-600">{errors.icon}</p>
+                                    {errors.image && (
+                                        <p className="text-sm text-red-600">{errors.image}</p>
                                     )}
                                 </div>
 

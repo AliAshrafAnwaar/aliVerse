@@ -41,13 +41,13 @@ export default function ProjectsSection({ projects, featuredProjects }) {
                             href={route('projects.show', project.slug)}
                             className="group"
                         >
-                            <div className="h-full flex flex-col rounded-xl border-2 overflow-hidden bg-white dark:bg-gray-800 hover:border-primary hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                            <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300">
                                 {/* Project Image */}
-                                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20">
+                                <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
                                     <img
                                         src={project.thumbnail_url}
                                         alt={project.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     {/* Overlay on hover */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -78,11 +78,11 @@ export default function ProjectsSection({ projects, featuredProjects }) {
                                 </div>
 
                                 {/* Project Info */}
-                                <div className="flex-1 flex flex-col p-5">
-                                    <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                                <CardContent className="flex-1 flex flex-col p-5">
+                                    <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                                         {project.title}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 flex-1">
                                         {project.description}
                                     </p>
 
@@ -103,8 +103,8 @@ export default function ProjectsSection({ projects, featuredProjects }) {
                                             </Badge>
                                         )}
                                     </div>
-                                </div>
-                            </div>
+                                </CardContent>
+                            </Card>
                         </Link>
                     ))}
                 </div>

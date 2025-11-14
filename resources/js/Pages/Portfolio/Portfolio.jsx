@@ -138,8 +138,10 @@ export default function Portfolio({ skills, groupedSkills, experiences, educatio
                                                 {categorySkills.map((skill) => (
                                                     <div key={skill.id} className="flex items-center justify-between p-3 rounded-lg border">
                                                         <div className="flex items-center gap-3">
-                                                            {skill.icon && (
-                                                                <span className="text-xl">{skill.icon}</span>
+                                                            {skill.image_url ? (
+                                                                <img src={skill.image_url} alt={skill.name} className="h-8 w-8 rounded-lg object-cover" />
+                                                            ) : (
+                                                                <span className="text-xl">🛠️</span>
                                                             )}
                                                             <div>
                                                                 <div className="font-medium">{skill.name}</div>

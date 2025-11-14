@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Briefcase, MapPin, Calendar, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useMemo, useCallback } from 'react';
 
 export default function ExperienceSection({ experiences, currentExperience }) {
     const { t } = useTranslation();
@@ -16,24 +16,36 @@ export default function ExperienceSection({ experiences, currentExperience }) {
     const hoverTimers = useRef({ enter: {}, leave: {} });
     const [cols, setCols] = useState(1);
 
-    const formatDate = (dateString) => {
+    // Memoize date formatting functions
+    const formatDate = useCallback((dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
         });
-    };
+    }, []);
 
-    const getDuration = (item) => {
+    const getDuration = useCallback((item) => {
         const start = formatDate(item.start_date);
         const end = item.end_date ? formatDate(item.end_date) : 'Present';
         return `${start} - ${end}`;
-    };
+    }, [formatDate]);
 
-    // Combine all experiences, but put current at the end
-    const pastExperiences = experiences.filter(exp => !exp.is_current);
-    const allExperiences = currentExperience 
-        ? [...pastExperiences, currentExperience] 
-        : pastExperiences;
+    // Memoize combined experiences array
+    const allExperiences = useMemo(() => {
+        const pastExperiences = experiences.filter(exp => !exp.is_current);
+        return currentExperience 
+            ? [...pastExperiences, currentExperience] 
+            : pastExperiences;
+    }, [experiences, currentExperience]);
+
+    // Debounce helper
+    const debounce = useCallback((func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    }, []);
 
     // Determine column count based on Tailwind breakpoints (base:1, sm:2, lg:3)
     useEffect(() => {
@@ -45,31 +57,37 @@ export default function ExperienceSection({ experiences, currentExperience }) {
         };
         const update = () => setCols(computeCols());
         update();
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
-    }, []);
+        
+        // Debounce resize handler (100ms)
+        const debouncedUpdate = debounce(update, 100);
+        window.addEventListener('resize', debouncedUpdate);
+        return () => window.removeEventListener('resize', debouncedUpdate);
+    }, [debounce]);
 
     // Build a path THROUGH nodes; on row transitions, route to container edge then down and back
     useLayoutEffect(() => {
         const container = containerRef.current;
         if (!container) return;
 
-        const containerRect = container.getBoundingClientRect();
-        const containerWidth = containerRect.width;
-        const edgePadding = -50; // larger padding to avoid clipping at container bounds
-        
-        const points = nodeRefs.current
-            .filter(Boolean)
-            .map((node, index) => {
-                const rect = node.getBoundingClientRect();
-                return {
-                    x: rect.left - containerRect.left + rect.width / 2,
-                    y: rect.top - containerRect.top + rect.height / 2,
-                    left: rect.left - containerRect.left,
-                    top: rect.top - containerRect.top,
-                    index: index,
-                };
-            });
+        // Batch all DOM reads in a single rAF
+        const rafId = requestAnimationFrame(() => {
+            const containerRect = container.getBoundingClientRect();
+            const containerWidth = containerRect.width;
+            const edgePadding = -25; // larger padding to avoid clipping at container bounds
+            
+            // Batch all getBoundingClientRect calls
+            const points = nodeRefs.current
+                .filter(Boolean)
+                .map((node, index) => {
+                    const rect = node.getBoundingClientRect();
+                    return {
+                        x: rect.left - containerRect.left + rect.width / 2,
+                        y: rect.top - containerRect.top + rect.height / 2,
+                        left: rect.left - containerRect.left,
+                        top: rect.top - containerRect.top,
+                        index: index,
+                    };
+                });
 
         if (points.length === 0) {
             setPathD('');
@@ -157,32 +175,55 @@ export default function ExperienceSection({ experiences, currentExperience }) {
             }
         }
 
-        setPathD(d);
-    }, [allExperiences, recalc, hoveredId]);
+            setPathD(d);
+        });
+        
+        return () => cancelAnimationFrame(rafId);
+    }, [allExperiences, recalc, openIds]);
 
+    // Consolidated resize handling with debouncing
     useEffect(() => {
-        const onResize = () => setRecalc((c) => c + 1);
-        window.addEventListener('resize', onResize);
+        const handleResize = () => setRecalc((c) => c + 1);
+        const debouncedResize = debounce(handleResize, 0);
 
         // Observe container size/content changes
         const el = containerRef.current;
         let ro;
         if (el && 'ResizeObserver' in window) {
-            ro = new ResizeObserver(() => setRecalc((c) => c + 1));
+            // Debounce ResizeObserver callbacks too
+            ro = new ResizeObserver(debounce(() => setRecalc((c) => c + 1), 0));
             ro.observe(el);
         }
 
         return () => {
-            window.removeEventListener('resize', onResize);
             if (ro) ro.disconnect();
         };
-    }, []);
+    }, [debounce]);
 
-    // Recompute on hover open/close after layout settles
+    // Smooth path updates during card expansion animation
     useEffect(() => {
-        const id = requestAnimationFrame(() => setRecalc((c) => c + 1));
-        return () => cancelAnimationFrame(id);
-    }, [hoveredId]);
+        // Update path continuously during any card expansion to keep line attached to nodes
+        let rafId;
+        let frameCount = 0;
+        const maxFrames = 45; // ~700ms at 60fps
+        
+        const updatePath = () => {
+            setRecalc((c) => c + 1);
+            frameCount++;
+            
+            if (frameCount < maxFrames && openIds.size > 0) {
+                rafId = requestAnimationFrame(updatePath);
+            }
+        };
+        
+        if (openIds.size > 0) {
+            rafId = requestAnimationFrame(updatePath);
+        }
+        
+        return () => {
+            if (rafId) cancelAnimationFrame(rafId);
+        };
+    }, [openIds]);
 
     // Cleanup hover timers on unmount
     useEffect(() => {
@@ -208,7 +249,7 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                     {t('portfolio.experience_description', 'Professional journey and key accomplishments')}
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-12">
                 <div ref={containerRef} className="relative">
                     {/* SVG layer for connector line */}
                     <svg 
@@ -229,7 +270,7 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                                 stroke="url(#expSnake)" 
                                 strokeWidth="2.5" 
                                 strokeLinecap="round" 
-                                strokeLinejoin="round" 
+                                strokeLinejoin="round"
                             />
                         )}
                     </svg>
@@ -252,7 +293,7 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                                                 <div 
                                                     key={experience.id} 
                                                     className="relative pt-12"
-                                                    onMouseEnter={() => {
+                                                    onMouseEnter={useCallback(() => {
                                                         // cancel pending leave
                                                         const lid = hoverTimers.current.leave[experience.id];
                                                         if (lid) {
@@ -266,8 +307,8 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                                                             next.add(experience.id);
                                                             return next;
                                                         });
-                                                    }}
-                                                    onMouseLeave={() => {
+                                                    }, [experience.id])}
+                                                    onMouseLeave={useCallback(() => {
                                                         // cancel pending enter
                                                         const eid = hoverTimers.current.enter[experience.id];
                                                         if (eid) {
@@ -283,9 +324,9 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                                                                 return next;
                                                             });
                                                             delete hoverTimers.current.leave[experience.id];
-                                                        }, 250);
+                                                        }, 500);
                                                         hoverTimers.current.leave[experience.id] = lid;
-                                                    }}
+                                                    }, [experience.id])}
                                                 >
                                                     {/* Timeline node above this card */}
                                                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-20">
@@ -356,20 +397,30 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                                                                         </p>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-                                                        
-                                                        {/* Show more indicator */}
-                                                        {experience.description && !openIds.has(experience.id) && (
-                                                            <div className="flex justify-center mt-2 text-xs text-center pointer-events-none" aria-hidden="true" style={{ color: 'var(--muted-foreground)' }}>
-                                                                <ChevronDown className="w-4 h-4 animate-bounce" />
-                                                            </div>
-                                                        )}
                                                     </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                                                )}
+
+                                                {/* Show more indicator (reserve space, animate visibility) */}
+                                                {experience.description && (
+                                                    <div
+                                                        className="flex justify-center mt-2 h-5 text-xs text-center pointer-events-none"
+                                                        aria-hidden="true"
+                                                        style={{ color: 'var(--muted-foreground)' }}
+                                                    >
+                                                        <ChevronDown
+                                                            className={`w-4 h-4 transition-all duration-300 ${
+                                                                openIds.has(experience.id)
+                                                                    ? 'opacity-0 translate-y-1'
+                                                                    : 'opacity-100 animate-bounce'
+                                                            }`}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                                 );
                             });
                         })()}

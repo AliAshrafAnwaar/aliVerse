@@ -16,14 +16,14 @@ export default function Create({ categories }) {
         name: '',
         category: '',
         proficiency_level: 5,
-        icon: '',
+        image: null,
         is_featured: false,
         sort_order: 0,
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('admin.skills.store'));
+        post(route('admin.skills.store'), { forceFormData: true });
     };
 
     return (
@@ -123,21 +123,17 @@ export default function Create({ categories }) {
                                     )}
                                 </div>
 
-                                {/* Icon */}
+                                {/* Image */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="icon">{t('skills.icon', 'Icon')}</Label>
+                                    <Label htmlFor="image">{t('skills.image', 'Image')}</Label>
                                     <Input
-                                        id="icon"
-                                        type="text"
-                                        value={data.icon}
-                                        onChange={(e) => setData('icon', e.target.value)}
-                                        placeholder={t('skills.icon_placeholder', 'e.g., ⚛️, 🐍, 🐳')}
+                                        id="image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('image', e.target.files?.[0] || null)}
                                     />
-                                    <p className="text-sm text-gray-500">
-                                        {t('skills.icon_description', 'Use an emoji or icon class')}
-                                    </p>
-                                    {errors.icon && (
-                                        <p className="text-sm text-red-600">{errors.icon}</p>
+                                    {errors.image && (
+                                        <p className="text-sm text-red-600">{errors.image}</p>
                                     )}
                                 </div>
 

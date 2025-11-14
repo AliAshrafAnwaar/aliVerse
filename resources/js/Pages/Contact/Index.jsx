@@ -31,8 +31,14 @@ export default function Index({ contact }) {
 
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
-    // You could add a toast notification here
-    console.log(`Copied ${type}: ${text}`);
+    // Add a subtle animation feedback
+    const originalText = event.target.textContent;
+    event.target.textContent = 'Copied!';
+    event.target.classList.add('text-green-600');
+    setTimeout(() => {
+      event.target.textContent = originalText;
+      event.target.classList.remove('text-green-600');
+    }, 2000);
   };
 
   const formatSocialUrl = (url, platform) => {
@@ -139,7 +145,7 @@ export default function Index({ contact }) {
               </div>
               
               <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-                {contact.title}
+                {t('contact.hey_there', "Hey there! Let's connect")}
               </h1>
               
               {contact.subtitle && (
@@ -158,12 +164,12 @@ export default function Index({ contact }) {
                 {contact.available_for_work && (
                   <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-4 py-2 text-sm font-medium">
                     <Briefcase className="w-4 h-4 mr-2" />
-                    Available for Work
+                    {t('contact.lets_build_something', "Let's build something amazing!")}
                   </Badge>
                 )}
                 <Badge variant="outline" className="px-4 py-2 text-sm font-medium">
                   <Calendar className="w-4 h-4 mr-2" />
-                  Active Now
+                  {t('contact.ready_to_chat', 'Ready to chat')}
                 </Badge>
               </div>
             </div>
@@ -180,10 +186,10 @@ export default function Index({ contact }) {
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                     <Send className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
-                  Get in Touch
+                  {t('contact.how_can_we_connect', "How would you like to connect?")}
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  Choose your preferred way to reach me
+                  {t('contact.choose_your_favorite_way', "Pick your favorite way to reach out - I'm excited to hear from you!")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -196,7 +202,7 @@ export default function Index({ contact }) {
                           <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">Email</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{t('contact.drop_me_a_line', 'Drop me a line')}</p>
                           <p className="text-blue-600 dark:text-blue-400 hover:underline">{contact.email}</p>
                         </div>
                       </div>
@@ -216,7 +222,7 @@ export default function Index({ contact }) {
                           <Phone className="w-5 h-5 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">Phone</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{t('contact.give_me_a_call', 'Give me a call')}</p>
                           <a href={`tel:${contact.phone}`} className="text-green-600 dark:text-green-400 hover:underline">
                             {contact.phone}
                           </a>
@@ -236,7 +242,7 @@ export default function Index({ contact }) {
                         <MapPin className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">Location</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{t('contact.where_i_am', 'Where I am')}</p>
                         <p className="text-purple-600 dark:text-purple-400">{contact.location}</p>
                       </div>
                     </div>
@@ -250,7 +256,7 @@ export default function Index({ contact }) {
                         <Globe className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">Website</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{t('contact.check_out_my_site', 'Check out my site')}</p>
                         <a href={contact.website} target="_blank" rel="noopener noreferrer" 
                            className="text-orange-600 dark:text-orange-400 hover:underline">
                           {contact.website.replace(/^https?:\/\//, '')}
@@ -269,10 +275,10 @@ export default function Index({ contact }) {
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
                     <MessageCircle className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
-                  Social Media
+                  {t('contact.lets_be_friends', "Let's be friends online!")}
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  Connect with me on social platforms
+                  {t('contact.follow_my_adventures', "Follow my adventures and let's share some cool stuff together")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -314,7 +320,7 @@ export default function Index({ contact }) {
                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                   <Clock className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                Availability & Response Time
+                {t('contact.when_to_expect_reply', 'When to expect a reply')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -324,10 +330,10 @@ export default function Index({ contact }) {
                     <Briefcase className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                    Work Status
+                    {t('contact.currently', 'Currently')}
                   </h3>
                   <p className={`text-lg font-medium ${contact.available_for_work ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                    {contact.available_for_work ? 'Available for Work' : 'Currently Unavailable'}
+                    {contact.available_for_work ? t('contact.open_for_opportunities', 'Open for new opportunities!') : t('contact.focused_on_current_projects', 'Focused on current projects')}
                   </p>
                 </div>
 
@@ -337,7 +343,7 @@ export default function Index({ contact }) {
                       <Clock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     </div>
                     <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                      Response Time
+                      {t('contact.response_time', 'I usually reply within')}
                     </h3>
                     <p className="text-lg text-blue-600 dark:text-blue-400">
                       {contact.response_time}
@@ -351,7 +357,7 @@ export default function Index({ contact }) {
                       <Calendar className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                     </div>
                     <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                      Working Hours
+                      {t('contact.best_time_to_reach', 'Best time to reach me')}
                     </h3>
                     <p className="text-lg text-purple-600 dark:text-purple-400">
                       {contact.working_hours}
@@ -367,21 +373,21 @@ export default function Index({ contact }) {
             <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <CardContent className="p-12">
                 <h2 className="text-3xl font-bold mb-4">
-                  Ready to Start a Conversation?
+                  {t('contact.excited_to_hear_from_you', "Excited to hear from you!")}
                 </h2>
                 <p className="text-xl mb-8 text-blue-100">
-                  I'm always excited to hear about new projects, opportunities, or just to chat about technology.
+                  {t('contact.looking_forward_to_chatting', "Whether it's a project, collaboration, or just a friendly hello - I'm always up for a good chat!")}
                 </p>
                 <div className="flex justify-center gap-4">
                   <Button size="lg" variant="secondary" onClick={() => copyToClipboard(contact.email, 'email')}>
                     <Mail className="w-5 h-5 mr-2" />
-                    Copy Email
+                    {t('contact.copy_email', 'Copy Email')}
                   </Button>
                   {contact.linkedin_url && (
                     <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600" 
                             onClick={() => window.open(contact.linkedin_url, '_blank')}>
                       <Linkedin className="w-5 h-5 mr-2" />
-                      Connect on LinkedIn
+                      {t('contact.connect_on_linkedin', 'Connect on LinkedIn')}
                     </Button>
                   )}
                 </div>
