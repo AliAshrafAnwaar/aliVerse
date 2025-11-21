@@ -148,16 +148,28 @@ class PostController extends Controller
         // Increment view count
         $post->incrementViews();
 
-        $post->load(['user', 'category', 'tags']);
+        $post->load(['user', 'category', 'tags', 'reactions.user']);
 
         // Load comments only if the table exists
         if (Schema::hasTable('comments')) {
             $post->load(['comments' => function ($query) {
                 $query->where('is_approved', true)
                       ->whereNull('parent_id')
-                      ->with('user', 'replies.user');
+                      ->with('user', 'replies.user')
+                      ->latest();
             }]);
         }
+
+        // Get user's reaction if authenticated
+        $userReaction = null;
+        if (auth()->check()) {
+            $userReaction = $post->reactions()
+                ->where('user_id', auth()->id())
+                ->first();
+        }
+
+        // Get reaction counts
+        $reactionCounts = $post->getReactionCounts();
 
         $relatedPosts = Post::query()
             ->where('id', '!=', $post->id)
@@ -172,6 +184,8 @@ class PostController extends Controller
         return Inertia::render('Blog/Show', [
             'post' => $post,
             'relatedPosts' => $relatedPosts,
+            'userReaction' => $userReaction,
+            'reactionCounts' => $reactionCounts,
         ]);
     }
 
@@ -197,7 +211,10 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $this->authorize('update', $post);
+        // Allow admins to update any post, or users to update their own posts
+        if (!auth()->user()->isAdmin() && auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
         
         $data = $request->validated();
 
@@ -241,7 +258,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post);
+        // Allow admins to delete any post, or users to delete their own posts
+        if (!auth()->user()->isAdmin() && auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
         
         // Delete featured image
         if ($post->featured_image) {
@@ -259,7 +279,10 @@ class PostController extends Controller
      */
     public function toggleFeatured(Post $post)
     {
-        $this->authorize('update', $post);
+        // Only admins can toggle featured status
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
         
         $post->update(['featured' => !$post->featured]);
 
@@ -271,7 +294,10 @@ class PostController extends Controller
      */
     public function publish(Post $post)
     {
-        $this->authorize('update', $post);
+        // Allow admins to publish any post, or users to publish their own posts
+        if (!auth()->user()->isAdmin() && auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
         
         $post->update([
             'status' => 'published',
@@ -286,7 +312,10 @@ class PostController extends Controller
      */
     public function unpublish(Post $post)
     {
-        $this->authorize('update', $post);
+        // Allow admins to unpublish any post, or users to unpublish their own posts
+        if (!auth()->user()->isAdmin() && auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
         
         $post->update([
             'status' => 'draft',

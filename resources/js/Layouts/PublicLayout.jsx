@@ -4,9 +4,13 @@ import { Link } from '@inertiajs/react';
 import ThemeToggle from '@/Components/ThemeToggle';
 import LanguageToggle from '@/Components/LanguageToggle';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { Button } from '@/Components/ui/button';
+import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 
-export default function PublicLayout({ children }) {
+export default function PublicLayout({ user, children }) {
     const { t } = useTranslation();
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     return (
         <div className="min-h-screen bg-background">
@@ -51,7 +55,7 @@ export default function PublicLayout({ children }) {
                                 </Link>
                                 <Link
                                     href="/contact"
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary border-b-2 border-primary"
+                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
                                 >
                                     {t('navigation.contact')}
                                 </Link>
@@ -59,18 +63,41 @@ export default function PublicLayout({ children }) {
 
                             {/* Auth Links */}
                             <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
-                                <Link
-                                    href="/login"
-                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-primary hover:bg-secondary transition-colors"
-                                >
-                                    {t('auth.login')}
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-primary bg-primary hover:bg-primary/90 transition-colors"
-                                >
-                                    {t('auth.register')}
-                                </Link>
+                                {user ? (
+                                    <>
+                                        <Link
+                                            href={user.is_admin ? route('admin.dashboard') : route('home')}
+                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-primary hover:bg-secondary transition-colors"
+                                        >
+                                            <UserIcon className="w-4 h-4 mr-2" />
+                                            {user.name}
+                                        </Link>
+                                        <Link
+                                            href={route('logout')}
+                                            method="post"
+                                            as="button"
+                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-red-600 hover:bg-secondary transition-colors"
+                                        >
+                                            <LogOut className="w-4 h-4 mr-2" />
+                                            {t('auth.logout', 'Logout')}
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href={route('login')}
+                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-primary hover:bg-secondary transition-colors"
+                                        >
+                                            {t('auth.login')}
+                                        </Link>
+                                        <Link
+                                            href={route('register')}
+                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
+                                        >
+                                            {t('auth.register')}
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -99,7 +126,7 @@ export default function PublicLayout({ children }) {
                         </Link>
                         <Link
                             href="/contact"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary bg-secondary transition-colors"
+                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-primary hover:bg-secondary hover:border-primary transition-colors"
                         >
                             {t('navigation.contact')}
                         </Link>
@@ -107,18 +134,45 @@ export default function PublicLayout({ children }) {
                     <div className="pt-4 pb-3 border-t border-border">
                         <div className="flex items-center px-4 space-x-2">
                             <div className="flex-1">
-                                <Link
-                                    href="/login"
-                                    className="block text-base font-medium text-foreground hover:text-primary transition-colors"
-                                >
-                                    {t('auth.login')}
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="block text-sm text-muted-foreground hover:text-primary transition-colors"
-                                >
-                                    {t('auth.register')}
-                                </Link>
+                                {user ? (
+                                    <>
+                                        <div className="mb-3">
+                                            <p className="text-base font-medium text-foreground">{user.name}</p>
+                                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                                        </div>
+                                        <Link
+                                            href={user.is_admin ? route('admin.dashboard') : route('home')}
+                                            className="block text-base font-medium text-foreground hover:text-primary transition-colors mb-2"
+                                        >
+                                            <UserIcon className="w-4 h-4 inline mr-2" />
+                                            {t('navigation.dashboard', 'Dashboard')}
+                                        </Link>
+                                        <Link
+                                            href={route('logout')}
+                                            method="post"
+                                            as="button"
+                                            className="block text-base font-medium text-foreground hover:text-red-600 transition-colors"
+                                        >
+                                            <LogOut className="w-4 h-4 inline mr-2" />
+                                            {t('auth.logout', 'Logout')}
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href={route('login')}
+                                            className="block text-base font-medium text-foreground hover:text-primary transition-colors mb-2"
+                                        >
+                                            {t('auth.login')}
+                                        </Link>
+                                        <Link
+                                            href={route('register')}
+                                            className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                                        >
+                                            {t('auth.register')}
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -35,12 +35,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <NavLink href={route('home')} active={route().current('home')}>
                                     {t('navigation.home')}
                                 </NavLink>
-                                <NavLink href={route('portfolio.show')} active={route().current('portfolio.show')}>
-                                    {t('navigation.portfolio')}
-                                </NavLink>
-                                <NavLink href={route('projects.index')} active={route().current('projects.index')}>
-                                    {t('navigation.projects')}
-                                </NavLink>
                                 <NavLink href={route('posts.index')} active={route().current('posts.index')}>
                                     {t('navigation.blog')}
                                 </NavLink>
@@ -140,12 +134,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('home')}>
                             {t('navigation.home')}
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('portfolio.show')}>
-                            {t('navigation.portfolio')}
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('projects.index')}>
-                            {t('navigation.projects')}
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('posts.index')}>
                             {t('navigation.blog')}

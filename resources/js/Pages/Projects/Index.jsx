@@ -6,7 +6,7 @@ import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Search, ExternalLink, Github, Star } from 'lucide-react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 
 export default function Index({ projects, filters }) {
     const { t } = useTranslation();
@@ -38,7 +38,7 @@ export default function Index({ projects, filters }) {
     };
 
     return (
-        <AuthenticatedLayout user={user} header={t('navigation.projects', 'Projects')}>
+        <PublicLayout user={user}>
             <Head title={t('navigation.projects', 'Projects')} />
 
             <div className="py-8">
@@ -193,6 +193,6 @@ export default function Index({ projects, filters }) {
                     )}
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </PublicLayout>
     );
 }

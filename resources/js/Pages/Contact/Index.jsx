@@ -1,9 +1,8 @@
-import React from 'react';
-import { Head } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, usePage } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
-import { Separator } from '@/Components/ui/separator';
 import { 
   Mail, 
   Phone, 
@@ -20,14 +19,21 @@ import {
   Briefcase,
   Calendar,
   Sparkles,
-  User
+  User,
+  ArrowRight
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PublicLayout from '@/Layouts/PublicLayout';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Footer from '@/Components/Footer';
 
 export default function Index({ contact }) {
   const { t } = useTranslation();
+  const { auth } = usePage().props;
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 100);
+  }, []);
 
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
@@ -118,34 +124,58 @@ export default function Index({ contact }) {
   ].filter(link => link.url);
 
   return (
-    <AuthenticatedLayout>
+    <PublicLayout user={auth?.user}>
       <Head title={contact.meta_title || `${contact.title} - ${contact.user?.name}`} />
       
       {contact.meta_description && (
         <meta name="description" content={contact.meta_description} />
       )}
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div className="text-center">
-              <div className="flex justify-center mb-6">
+      {/* Add animation keyframes */}
+      <style>{`
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(20px, -50px) scale(1.1); }
+          50% { transform: translate(-20px, 20px) scale(0.9); }
+          75% { transform: translate(50px, 50px) scale(1.05); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 dark:bg-blue-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+              <div className="flex justify-center mb-8">
                 <div className="relative">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <User className="w-16 h-16 text-white" />
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-110 transition-transform">
+                    <MessageCircle className="w-12 h-12 text-white" />
                   </div>
-                  <div className="absolute -bottom-2 -right-2">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-white" />
+                  <div className="absolute -top-2 -right-2">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-                {t('contact.hey_there', "Hey there! Let's connect")}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                {t('contact.hey_there', "Let's Connect")}
               </h1>
               
               {contact.subtitle && (
@@ -173,14 +203,15 @@ export default function Index({ contact }) {
                 </Badge>
               </div>
             </div>
-          </div>
         </div>
+      </section>
 
-        {/* Contact Information */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* Contact Information */}
+      <section className="py-20 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Primary Contact */}
-            <Card className="shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:shadow-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -269,7 +300,7 @@ export default function Index({ contact }) {
             </Card>
 
             {/* Social Media */}
-            <Card className="shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:shadow-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -314,7 +345,7 @@ export default function Index({ contact }) {
           </div>
 
           {/* Availability Information */}
-          <Card className="mt-8 shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <Card className="mt-8 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:shadow-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">
                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -368,34 +399,39 @@ export default function Index({ contact }) {
             </CardContent>
           </Card>
 
-          {/* Call to Action */}
-          <div className="mt-12 text-center">
-            <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-              <CardContent className="p-12">
-                <h2 className="text-3xl font-bold mb-4">
-                  {t('contact.excited_to_hear_from_you', "Excited to hear from you!")}
-                </h2>
-                <p className="text-xl mb-8 text-blue-100">
-                  {t('contact.looking_forward_to_chatting', "Whether it's a project, collaboration, or just a friendly hello - I'm always up for a good chat!")}
-                </p>
-                <div className="flex justify-center gap-4">
-                  <Button size="lg" variant="secondary" onClick={() => copyToClipboard(contact.email, 'email')}>
-                    <Mail className="w-5 h-5 mr-2" />
-                    {t('contact.copy_email', 'Copy Email')}
-                  </Button>
-                  {contact.linkedin_url && (
-                    <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600" 
-                            onClick={() => window.open(contact.linkedin_url, '_blank')}>
-                      <Linkedin className="w-5 h-5 mr-2" />
-                      {t('contact.connect_on_linkedin', 'Connect on LinkedIn')}
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+        </div>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-900 dark:to-purple-900">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div>
+            <h2 className="text-4xl font-bold text-white mb-6">
+              {t('contact.excited_to_hear_from_you', "Excited to hear from you!")}
+            </h2>
+            <p className="text-xl text-blue-100 mb-8">
+              {t('contact.looking_forward_to_chatting', "Whether it's a project, collaboration, or just a friendly hello - I'm always up for a good chat!")}
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Button size="lg" variant="secondary" onClick={() => copyToClipboard(contact.email, 'email')}>
+                <Mail className="w-5 h-5 mr-2" />
+                {t('contact.copy_email', 'Copy Email')}
+              </Button>
+              {contact.linkedin_url && (
+                <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white/10" 
+                        onClick={() => window.open(contact.linkedin_url, '_blank')}>
+                  <Linkedin className="w-5 h-5 mr-2" />
+                  {t('contact.connect_on_linkedin', 'Connect on LinkedIn')}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </AuthenticatedLayout>
+      </section>
+
+      {/* Footer */}
+      <Footer portfolioOwner={contact.user || auth?.user} />
+    </PublicLayout>
   );
 }

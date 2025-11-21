@@ -12,6 +12,8 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,26 @@ Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.sh
 
 // Public Contact Route
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+
+// Reaction Routes (requires authentication)
+Route::middleware('auth')->group(function () {
+    Route::post('/reactions', [ReactionController::class, 'store'])->name('reactions.add');
+    Route::delete('/reactions', [ReactionController::class, 'destroy'])->name('reactions.remove');
+    Route::get('/reactions', [ReactionController::class, 'index'])->name('reactions.index');
+});
+
+// Comment Routes (requires authentication for create/update/delete)
+Route::middleware('auth')->group(function () {
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    
+    // Admin only comment moderation
+    Route::middleware('admin')->group(function () {
+        Route::post('/comments/{comment}/approve', [CommentController::class, 'approve'])->name('comments.approve');
+        Route::post('/comments/{comment}/reject', [CommentController::class, 'reject'])->name('comments.reject');
+    });
+});
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

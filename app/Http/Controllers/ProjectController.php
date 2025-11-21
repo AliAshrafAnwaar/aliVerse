@@ -44,8 +44,25 @@ class ProjectController extends Controller
         // Record page view
         $project->recordView();
 
+        // Get user's reaction if authenticated
+        $userReaction = null;
+        if (auth()->check()) {
+            $userReaction = $project->reactions()
+                ->where('user_id', auth()->id())
+                ->first();
+        }
+
+        // Get reaction counts
+        $reactionCounts = $project->getReactionCounts();
+        
+        // Get views count
+        $project->views_count = $project->getViewsCount();
+        $project->total_reactions_count = $project->getTotalReactionsCount();
+
         return Inertia::render('Projects/Show', [
             'project' => $project,
+            'userReaction' => $userReaction,
+            'reactionCounts' => $reactionCounts,
         ]);
     }
 

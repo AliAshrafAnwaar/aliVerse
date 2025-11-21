@@ -1,18 +1,35 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { Separator } from '@/Components/ui/separator';
 import { ArrowLeft, ExternalLink, Github, Calendar, Eye, Heart } from 'lucide-react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 
-export default function Show({ project }) {
+export default function Show({ project, userReaction, reactionCounts }) {
     const { t } = useTranslation();
     const user = usePage().props.auth.user;
 
+    const handleReact = (type) => {
+        if (!user) {
+            router.visit(route('login'));
+            return;
+        }
+
+        router.post(
+            route('reactions.add'),
+            {
+                reactable_type: 'App\\Models\\Project',
+                reactable_id: project.id,
+                type: type,
+            },
+            { preserveScroll: true }
+        );
+    };
+
     return (
-        <AuthenticatedLayout user={user} header={project.title}>
+        <PublicLayout user={user}>
             <Head title={project.title} />
 
             <div className="py-12">
@@ -142,6 +159,45 @@ export default function Show({ project }) {
 
                     <Separator className="my-8" />
 
+                    {/* Reactions Section */}
+                    <div className="mb-8">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                            {t('projects.reactions', 'Reactions')}
+                        </h2>
+                        <div className="flex items-center gap-4">
+                            <Button
+                                variant={userReaction?.type === 'like' ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => handleReact('like')}
+                                className="flex items-center gap-2"
+                            >
+                                <Heart className={`w-4 h-4 ${userReaction?.type === 'like' ? 'fill-current' : ''}`} />
+                                {t('projects.like', 'Like')} ({reactionCounts?.like || 0})
+                            </Button>
+                            
+                            <Button
+                                variant={userReaction?.type === 'love' ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => handleReact('love')}
+                                className="flex items-center gap-2"
+                            >
+                                <Heart className={`w-4 h-4 ${userReaction?.type === 'love' ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
+                                {t('projects.love', 'Love')} ({reactionCounts?.love || 0})
+                            </Button>
+
+                            <Button
+                                variant={userReaction?.type === 'celebrate' ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => handleReact('celebrate')}
+                                className="flex items-center gap-2"
+                            >
+                                🎉 {t('projects.celebrate', 'Celebrate')} ({reactionCounts?.celebrate || 0})
+                            </Button>
+                        </div>
+                    </div>
+
+                    <Separator className="my-8" />
+
                     {/* Project Meta */}
                     <div className="flex flex-wrap gap-6 text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
@@ -154,11 +210,11 @@ export default function Show({ project }) {
                         </div>
                         <div className="flex items-center">
                             <Heart className="h-4 w-4 mr-2" />
-                            {t('projects.reactions_count', 'Reactions')}: {project.total_reactions_count || 0}
+                            {t('projects.total_reactions', 'Total Reactions')}: {project.total_reactions_count || 0}
                         </div>
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </PublicLayout>
     );
 }

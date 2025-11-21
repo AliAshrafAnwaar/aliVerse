@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { Search, Filter, Grid, List, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 import PostGrid from '@/Components/Blog/PostGrid';
 import PostList from '@/Components/Blog/PostList';
 
@@ -48,7 +48,7 @@ export default function Index({ auth, posts, categories, tags, filters }) {
   const activeFilterCount = Object.keys(filters).filter((key) => !!filters[key]).length;
 
   return (
-    <AuthenticatedLayout user={auth.user} header={t('blog.title')}>
+    <PublicLayout user={auth.user}>
       <Head title={t('blog.title')} />
 
       <div className="py-8">
@@ -254,6 +254,6 @@ export default function Index({ auth, posts, categories, tags, filters }) {
           )}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </PublicLayout>
   );
 }

@@ -44,7 +44,7 @@
   },
   "navigation": {
     "home": "Home",
-    "portfolio": "Portfolio",
+    "portfolio": "Technical Portfolio",
     "projects": "Projects",
     "blog": "Blog",
     "about": "About",
@@ -198,6 +198,87 @@
     "get_in_touch": "Get in touch with us",
     "recent_activity": "Recent Activity",
     "no_recent_activity": "No recent activity to show.",
-    "start_exploring": "Start exploring the projects and blog posts!"
+    "start_exploring": "Start exploring the projects and blog posts!",
+    "average_rating": "Average Rating",
+    "total_testimonials": "Total Testimonials",
+    "no_testimonials": "No testimonials added yet."
+  },
+  "home": {
+    "get_in_touch": "Get in Touch",
+    "view_portfolio": "View Portfolio",
+    "available": "Available",
+    "years_experience": "Years Experience",
+    "skills": "Skills",
+    "projects_completed": "Projects Completed",
+    "happy_clients": "Happy Clients",
+    "blog_articles": "Blog Articles",
+    "professional_journey": "Professional Journey",
+    "experience_description": "Career path and professional experiences across different organizations",
+    "years": "years",
+    "present": "Present",
+    "show_more": "Show More",
+    "show_less": "Show Less",
+    "academic_background": "Academic Background",
+    "education_description": "Educational qualifications and continuous learning journey",
+    "remote": "Remote",
+    "technical_expertise": "Technical Expertise",
+    "skills_comprehensive_description": "Complete breakdown of technical skills and proficiency levels across different domains",
+    "featured_projects": "Featured Projects",
+    "projects_description": "Showcase of selected projects demonstrating technical skills and creativity",
+    "view_all_projects": "View All Projects",
+    "latest_blog_posts": "Latest Blogs",
+    "blog_description": "Insights, tutorials, and thoughts on technology and development",
+    "view_all_posts": "View All Blogs",
+    "client_testimonials": "Client Testimonials",
+    "testimonials_description": "What clients and colleagues say about working together",
+    "ready_to_work": "Ready to Work Together?",
+    "cta_title": "Let's Work Together",
+    "cta_description": "Have a project in mind? Let's discuss how we can collaborate and bring your ideas to life.",
+    "start_conversation": "Start a Conversation",
+    "view_work": "View My Work",
+    "start_project": "Start a Project",
+    "download_cv": "Download CV"
+  },
+  "skills": {
+    "category": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "database": "Database",
+      "devops": "DevOps",
+      "tools": "Tools",
+      "mobile": "Mobile",
+      "design": "Design",
+      "other": "Other"
+    },
+    "proficiency": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    },
+    "skill": "skill",
+    "skills_plural": "skills"
+  },
+  "projects": {
+    "featured": "Featured",
+    "view_demo": "View Demo",
+    "view_source": "View Source",
+    "no_projects": "No projects found"
+  },
+  "footer": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "projects": "Projects",
+    "blog": "Blog",
+    "contact": "Contact",
+    "default_bio": "Building innovative solutions and sharing knowledge with the community.",
+    "quick_links": "Quick Links",
+    "resources": "Resources",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "hire_me": "Hire Me",
+    "rights": "All rights reserved.",
+    "made_with": "Made with",
+    "using": "using Laravel & React"
   }
 }

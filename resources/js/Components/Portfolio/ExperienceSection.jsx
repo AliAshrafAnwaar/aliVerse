@@ -168,9 +168,10 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                 const cy = curr.y;
                 d += ` Q ${Math.round(cx)} ${Math.round(cy)}, ${Math.round(curr.x)} ${Math.round(curr.y)}`;
             } else {
-                // Same row: smooth quadratic bezier
+                // Same row: smooth quadratic bezier with vertical offset for visibility
                 const cx = (prev.x + curr.x) / 2;
-                const cy = (prev.y + curr.y) / 2;
+                // Add vertical offset to make the curve visible (negative = curve upward)
+                const cy = (prev.y + curr.y) / 2 - 0.6;
                 d += ` Q ${Math.round(cx)} ${Math.round(cy)}, ${Math.round(curr.x)} ${Math.round(curr.y)}`;
             }
         }
@@ -285,8 +286,18 @@ export default function ExperienceSection({ experiences, currentExperience }) {
                             let globalIdx = 0;
                             return rows.map((row, rowIdx) => {
                                 const renderRow = rowIdx % 2 === 0 ? row : [...row].reverse();
+                                // Center items when total is 2 or less
+                                const shouldCenter = allExperiences.length <= 2;
                                 return (
-                                    <div key={`row-${rowIdx}`} className="grid gap-6" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+                                    <div 
+                                        key={`row-${rowIdx}`} 
+                                        className={`grid gap-6 ${shouldCenter ? 'justify-center' : ''}`} 
+                                        style={{ 
+                                            gridTemplateColumns: shouldCenter 
+                                                ? `repeat(${row.length}, minmax(0, 400px))` 
+                                                : `repeat(${cols}, minmax(0, 1fr))` 
+                                        }}
+                                    >
                                         {renderRow.map((experience) => {
                                             const idx = globalIdx++;
                                             return (

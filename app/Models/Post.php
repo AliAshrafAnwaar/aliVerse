@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use App\Traits\Reactable;
+use App\Traits\Viewable;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Reactable, Viewable;
 
     protected $fillable = [
         'user_id',
@@ -126,6 +128,10 @@ class Post extends Model
 
     public function incrementViews()
     {
+        // Use the recordView method from Viewable trait
+        $this->recordView();
+        
+        // Also update views_count for backward compatibility
         $this->increment('views_count');
     }
 

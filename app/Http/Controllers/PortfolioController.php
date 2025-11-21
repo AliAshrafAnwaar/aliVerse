@@ -27,7 +27,7 @@ class PortfolioController extends Controller
         // Get all portfolio data
         $skills = Skill::ordered()->get();
         $experiences = Experience::ordered()->get();
-        $educations = Education::ordered()->get();
+        $educations = Education::orderBy('start_date', 'asc')->get();
         $testimonials = Testimonial::active()->ordered()->get();
 
         // Group skills by category for better organization
@@ -54,7 +54,7 @@ class PortfolioController extends Controller
         $skills = Skill::ordered()->get();
         // Order experiences chronologically for timeline map (oldest to newest)
         $experiences = Experience::orderBy('start_date', 'asc')->get();
-        $educations = Education::ordered()->get();
+        $educations = Education::orderBy('start_date', 'asc')->get();
         $testimonials = Testimonial::active()->ordered()->get();
         $projects = Project::published()->ordered()->get();
 

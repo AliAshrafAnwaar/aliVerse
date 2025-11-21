@@ -17,11 +17,12 @@ import {
   Edit
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 import PostCard from '@/Components/Blog/PostCard';
 
-export default function Show({ auth, post, relatedPosts }) {
+export default function Show({ auth, post, relatedPosts, userReaction, reactionCounts }) {
   const { t } = useTranslation();
+  const [commentContent, setCommentContent] = React.useState('');
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -61,6 +62,11 @@ export default function Show({ auth, post, relatedPosts }) {
   };
 
   const handleReact = (type) => {
+    if (!auth.user) {
+      router.visit(route('login'));
+      return;
+    }
+
     router.post(
       route('reactions.add'),
       {
@@ -72,8 +78,34 @@ export default function Show({ auth, post, relatedPosts }) {
     );
   };
 
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!auth.user) {
+      router.visit(route('login'));
+      return;
+    }
+
+    if (!commentContent.trim()) return;
+
+    router.post(
+      route('comments.store'),
+      {
+        commentable_type: 'App\\Models\\Post',
+        commentable_id: post.id,
+        content: commentContent,
+      },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setCommentContent('');
+        }
+      }
+    );
+  };
+
   return (
-    <AuthenticatedLayout user={auth.user} header={post.title}>
+    <PublicLayout user={auth.user}>
       <Head title={post.title} />
 
       <div className="py-12">
@@ -195,23 +227,23 @@ export default function Show({ auth, post, relatedPosts }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Button
-                  variant="outline"
+                  variant={userReaction?.type === 'like' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => handleReact('like')}
                   className="flex items-center gap-2"
                 >
-                  <Heart className="w-4 h-4" />
-                  {post.reactions?.filter(r => r.type === 'like').length || 0}
+                  <Heart className={`w-4 h-4 ${userReaction?.type === 'like' ? 'fill-current' : ''}`} />
+                  {reactionCounts?.like || 0}
                 </Button>
                 
                 <Button
-                  variant="outline"
+                  variant={userReaction?.type === 'love' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => handleReact('love')}
                   className="flex items-center gap-2"
                 >
-                  <Heart className="w-4 h-4 fill-red-500 text-red-500" />
-                  {post.reactions?.filter(r => r.type === 'love').length || 0}
+                  <Heart className={`w-4 h-4 ${userReaction?.type === 'love' ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
+                  {reactionCounts?.love || 0}
                 </Button>
               </div>
 
@@ -221,6 +253,34 @@ export default function Show({ auth, post, relatedPosts }) {
               </div>
             </div>
           </article>
+
+          {/* Comment Form */}
+          {auth.user && (
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold mb-4">{t('blog.add_comment', 'Add a Comment')}</h2>
+              <form onSubmit={handleCommentSubmit}>
+                <Card>
+                  <CardContent className="pt-6">
+                    <textarea
+                      value={commentContent}
+                      onChange={(e) => setCommentContent(e.target.value)}
+                      placeholder={t('blog.comment_placeholder', 'Write your comment here...')}
+                      className="w-full min-h-[100px] p-3 border rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-primary"
+                      maxLength={1000}
+                    />
+                    <div className="flex justify-between items-center mt-3">
+                      <span className="text-sm text-muted-foreground">
+                        {commentContent.length}/1000
+                      </span>
+                      <Button type="submit" disabled={!commentContent.trim()}>
+                        {t('blog.post_comment', 'Post Comment')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </form>
+            </section>
+          )}
 
           {/* Comments Section */}
           {post.comments && post.comments.length > 0 && (
@@ -266,6 +326,6 @@ export default function Show({ auth, post, relatedPosts }) {
           )}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </PublicLayout>
   );
 }
