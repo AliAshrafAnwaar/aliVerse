@@ -13,13 +13,17 @@ use Illuminate\Support\Facades\Log;
 class ContactController extends Controller
 {
     /**
-     * Display the public contact page.
+     * Display the public contact page - shows Ali's contact info (user ID 1)
+     * No authentication required
      */
     public function index(): Response
     {
-        $contact = Contact::active()
+        // Get Ali's contact info (user ID 1) or find the first active contact
+        $contact = Contact::where('user_id', 1)
             ->with('user')
-            ->firstOrFail();
+            ->firstOr(function () {
+                return Contact::active()->with('user')->firstOrFail();
+            });
 
         return Inertia::render('Contact/Index', [
             'contact' => $contact,

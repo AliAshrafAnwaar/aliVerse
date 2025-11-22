@@ -37,7 +37,7 @@ export default function SkillsSection({ groupedSkills, featuredSkills }) {
             <CardContent>
                 {/* Skills Grid */}
                 {groupedSkills && Object.keys(groupedSkills).length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {Object.entries(groupedSkills).map(([category, categorySkills]) => {
                             const IconComponent = getCategoryIcon(category);
                             return (

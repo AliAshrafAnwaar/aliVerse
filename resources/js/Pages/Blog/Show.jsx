@@ -62,11 +62,6 @@ export default function Show({ auth, post, relatedPosts, userReaction, reactionC
   };
 
   const handleReact = (type) => {
-    if (!auth.user) {
-      router.visit(route('login'));
-      return;
-    }
-
     router.post(
       route('reactions.add'),
       {
@@ -254,8 +249,8 @@ export default function Show({ auth, post, relatedPosts, userReaction, reactionC
             </div>
           </article>
 
-          {/* Comment Form */}
-          {auth.user && (
+          {/* Comment Form - Hidden */}
+          {/* {auth.user && (
             <section className="mb-12">
               <h2 className="text-2xl font-bold mb-4">{t('blog.add_comment', 'Add a Comment')}</h2>
               <form onSubmit={handleCommentSubmit}>
@@ -280,10 +275,10 @@ export default function Show({ auth, post, relatedPosts, userReaction, reactionC
                 </Card>
               </form>
             </section>
-          )}
+          )} */}
 
-          {/* Comments Section */}
-          {post.comments && post.comments.length > 0 && (
+          {/* Comments Section - Hidden */}
+          {/* {post.comments && post.comments.length > 0 && (
             <section className="mb-12">
               <h2 className="text-2xl font-bold mb-6">{t('blog.comments')}</h2>
               <div className="space-y-4">
@@ -311,7 +306,7 @@ export default function Show({ auth, post, relatedPosts, userReaction, reactionC
                 ))}
               </div>
             </section>
-          )}
+          )} */}
 
           {/* Related Posts */}
           {relatedPosts && relatedPosts.length > 0 && (

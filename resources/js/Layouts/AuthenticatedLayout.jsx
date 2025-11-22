@@ -8,6 +8,7 @@ import { Toaster } from '@/Components/ui/toaster';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Footer from '@/Components/Footer';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -45,16 +46,17 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="flex items-center gap-1 sm:gap-2">
-                            <div className="hidden sm:block">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                <span className="hidden md:inline">{user.name}</span>
-                                                <span className="md:hidden">{user.name.split(' ')[0]}</span>
+                            {user && (
+                                <div className="hidden sm:block">
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
+                                            <span className="inline-flex rounded-md">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
+                                                >
+                                                    <span className="hidden md:inline">{user.name}</span>
+                                                    <span className="md:hidden">{user.name.split(' ')[0]}</span>
 
                                                 <svg
                                                     className="ms-1 sm:ms-2 -me-1 h-4 w-4"
@@ -80,8 +82,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                             {t('auth.logout')}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
-                                </Dropdown>
-                            </div>
+                                    </Dropdown>
+                                </div>
+                            )}
 
                             <div className="hidden sm:flex items-center gap-1 sm:gap-2">
                                 <ThemeToggle />
@@ -143,35 +146,37 @@ export default function AuthenticatedLayout({ header, children }) {
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800 dark:text-gray-200">
-                                {user.name}
+                    {user && (
+                        <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                            <div className="px-4">
+                                <div className="font-medium text-base text-gray-800 dark:text-gray-200">
+                                    {user.name}
+                                </div>
+                                <div className="font-medium text-sm text-gray-500 dark:text-gray-400 break-all">
+                                    {user.email}
+                                </div>
                             </div>
-                            <div className="font-medium text-sm text-gray-500 dark:text-gray-400 break-all">
-                                {user.email}
+
+                            <div className="mt-3 space-y-1">
+                                <ResponsiveNavLink href={route('profile.edit')}>
+                                    {t('navigation.profile')}
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    method="post"
+                                    href={route('logout')}
+                                    as="button"
+                                >
+                                    {t('auth.logout')}
+                                </ResponsiveNavLink>
+                            </div>
+
+                            {/* Mobile Theme and Language Toggles */}
+                            <div className="mt-3 px-4 flex items-center gap-2 sm:hidden">
+                                <ThemeToggle />
+                                <LanguageToggle />
                             </div>
                         </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                {t('navigation.profile')}
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                {t('auth.logout')}
-                            </ResponsiveNavLink>
-                        </div>
-
-                        {/* Mobile Theme and Language Toggles */}
-                        <div className="mt-3 px-4 flex items-center gap-2 sm:hidden">
-                            <ThemeToggle />
-                            <LanguageToggle />
-                        </div>
-                    </div>
+                    )}
                 </div>
             </nav>
 
@@ -184,6 +189,10 @@ export default function AuthenticatedLayout({ header, children }) {
             )}
 
             <main>{children}</main>
+
+            {/* Footer - Only render if user exists */}
+            {user && <Footer portfolioOwner={user} />}
+
             <Toaster />
         </div>
     );

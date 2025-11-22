@@ -12,11 +12,6 @@ export default function Show({ project, userReaction, reactionCounts }) {
     const user = usePage().props.auth.user;
 
     const handleReact = (type) => {
-        if (!user) {
-            router.visit(route('login'));
-            return;
-        }
-
         router.post(
             route('reactions.add'),
             {
@@ -161,38 +156,28 @@ export default function Show({ project, userReaction, reactionCounts }) {
 
                     {/* Reactions Section */}
                     <div className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                            {t('projects.reactions', 'Reactions')}
-                        </h2>
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant={userReaction?.type === 'like' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => handleReact('like')}
-                                className="flex items-center gap-2"
-                            >
-                                <Heart className={`w-4 h-4 ${userReaction?.type === 'like' ? 'fill-current' : ''}`} />
-                                {t('projects.like', 'Like')} ({reactionCounts?.like || 0})
-                            </Button>
-                            
-                            <Button
-                                variant={userReaction?.type === 'love' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => handleReact('love')}
-                                className="flex items-center gap-2"
-                            >
-                                <Heart className={`w-4 h-4 ${userReaction?.type === 'love' ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
-                                {t('projects.love', 'Love')} ({reactionCounts?.love || 0})
-                            </Button>
-
-                            <Button
-                                variant={userReaction?.type === 'celebrate' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => handleReact('celebrate')}
-                                className="flex items-center gap-2"
-                            >
-                                🎉 {t('projects.celebrate', 'Celebrate')} ({reactionCounts?.celebrate || 0})
-                            </Button>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <Button
+                                    variant={userReaction?.type === 'like' ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={() => handleReact('like')}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Heart className={`w-4 h-4 ${userReaction?.type === 'like' ? 'fill-current' : ''}`} />
+                                    {reactionCounts?.like || 0}
+                                </Button>
+                                
+                                <Button
+                                    variant={userReaction?.type === 'love' ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={() => handleReact('love')}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Heart className={`w-4 h-4 ${userReaction?.type === 'love' ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
+                                    {reactionCounts?.love || 0}
+                                </Button>
+                            </div>
                         </div>
                     </div>
 

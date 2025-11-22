@@ -1,5 +1,5 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import PublicLayout from '@/Layouts/PublicLayout';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
@@ -8,11 +8,7 @@ import { Button } from '@/Components/ui/button';
 import { 
     ArrowRight, 
     Mail, 
-    User, 
-    MapPin, 
-    Github, 
-    Linkedin, 
-    Twitter,
+    User,
     Sparkles,
     Briefcase,
     Code,
@@ -26,15 +22,18 @@ import {
     Wrench,
     TrendingUp,
     Download, 
-    Award
+    Award,
+    Github
 } from 'lucide-react';
 
 // Import Home components
+import ProfileSection from '@/Components/Home/ProfileSection';
+import StatsSection from '@/Components/Home/StatsSection';
+import CTASection from '@/Components/Home/CTASection';
 import DetailedSkillsSection from '@/Components/Home/DetailedSkillsSection';
 import ExperienceSection from '@/Components/Home/ExperienceSection';
 import EducationSection from '@/Components/Home/EducationSection';
 import TestimonialsSection from '@/Components/Home/TestimonialsSection';
-import Footer from '@/Components/Footer';
 
 export default function HomePage({ 
     portfolioOwner, 
@@ -50,6 +49,7 @@ export default function HomePage({
     testimonials 
 }) {
     const { t } = useTranslation();
+    const { auth } = usePage().props;
     const [isVisible, setIsVisible] = useState(false);
     const [activeTab, setActiveTab] = useState('featured');
     const [projectFilter, setProjectFilter] = useState('all');
@@ -95,7 +95,7 @@ export default function HomePage({
     };
 
     return (
-        <AuthenticatedLayout user={portfolioOwner} header={t('navigation.home', 'Home')}>
+        <PublicLayout user={auth?.user} portfolioOwner={portfolioOwner}>
             <Head title={t('navigation.home', 'Home')} />
 
             {/* Add animation keyframes */}
@@ -127,160 +127,15 @@ export default function HomePage({
                 </div>
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* Left: Text Content */}
-                        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-                            
-                            
-                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                                {portfolioOwner.name}
-                            </h1>
-                            
-                            {portfolioOwner.position && (
-                                <h2 className="text-2xl sm:text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-6">
-                                    {portfolioOwner.position}
-                                </h2>
-                            )}
-                            
-                            {portfolioOwner.bio && (
-                                <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                                    {portfolioOwner.bio}
-                                </p>
-                            )}
-
-                            {portfolioOwner.location && (
-                                <div className="flex items-center gap-2 mb-6 text-gray-600 dark:text-gray-400">
-                                    <MapPin className="w-5 h-5" />
-                                    <span>{portfolioOwner.location}</span>
-                                </div>
-                            )}
-
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap gap-4 mb-8">
-                                <Button size="lg" className="group" asChild>
-                                    <Link href="/contact">
-                                        <Mail className="w-5 h-5 mr-2" />
-                                        {t('home.get_in_touch')}
-                                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
-                                </Button>
-                                <Button size="lg" variant="outline" asChild>
-                                    <Link href="/portfolio/show">
-                                        <User className="w-5 h-5 mr-2" />
-                                        {t('home.view_portfolio')}
-                                    </Link>
-                                </Button>
-                            </div>
-
-                            {/* Social Links */}
-                            <div className="flex gap-4">
-                                {portfolioOwner.github_url && (
-                                    <a 
-                                        href={portfolioOwner.github_url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-all hover:scale-110"
-                                    >
-                                        <Github className="w-5 h-5" />
-                                    </a>
-                                )}
-                                {portfolioOwner.linkedin_url && (
-                                    <a 
-                                        href={portfolioOwner.linkedin_url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-all hover:scale-110"
-                                    >
-                                        <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                    </a>
-                                )}
-                                {portfolioOwner.twitter_url && (
-                                    <a 
-                                        href={portfolioOwner.twitter_url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center hover:bg-sky-200 dark:hover:bg-sky-900/50 transition-all hover:scale-110"
-                                    >
-                                        <Twitter className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Right: Profile Image */}
-                        <div  className={` -mt-20 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
-                            <div className="relative w-full max-w-md mx-auto">
-                                {/* Profile Image - PNG with transparent background */}
-                                {portfolioOwner.avatar ? (
-                                    <img 
-                                        src={portfolioOwner.avatar_url} 
-                                        alt={portfolioOwner.name}
-                                        className="w-full h-auto object-contain drop-shadow-2xl transform hover:scale-105 transition-transform duration-500"
-                                    />
-                                ) : (
-                                    <div className="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-500">
-                                        <User className="w-32 h-32 text-white " />
-                                    </div>
-                                )}
-                                
-                                {/* Floating status badge */}
-                                <div className="absolute mt-20 -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 z-10">
-                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                                    <span className="text-sm font-semibold">{t('home.available')}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ProfileSection 
+                        portfolioOwner={portfolioOwner} 
+                        isVisible={isVisible} 
+                    />
                 </div>
             </section>
 
             {/* Stats Section */}
-            <section className="py-16 bg-white dark:bg-gray-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-center hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
-                            <CardContent className="p-6">
-                                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                    <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                                </div>
-                                <div className="text-3xl font-bold mb-1">{stats.total_experiences}+</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">{t('home.years_experience')}</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-500 mt-2">{stats.total_skills} {t('home.skills')}</div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-center hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
-                            <CardContent className="p-6">
-                                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                    <Code className="w-6 h-6 text-green-600 dark:text-green-400" />
-                                </div>
-                                <div className="text-3xl font-bold mb-1">{stats.total_projects}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">{t('home.projects_completed')}</div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-center hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
-                            <CardContent className="p-6">
-                                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                    <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                                </div>
-                                <div className="text-3xl font-bold mb-1">{stats.total_testimonials}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">{t('home.happy_clients')}</div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-center hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:-translate-y-1">
-                            <CardContent className="p-6">
-                                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                    <BookOpen className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                                </div>
-                                <div className="text-3xl font-bold mb-1">{stats.total_posts}</div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">{t('home.blog_articles')}</div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
+            <StatsSection stats={stats} />
 
             {/* Comprehensive Skills Section */}
             <DetailedSkillsSection 
@@ -523,33 +378,7 @@ export default function HomePage({
             )}
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-900 dark:to-purple-900">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl font-bold text-white mb-6">
-                        {t('home.cta_title')}
-                    </h2>
-                    <p className="text-xl text-blue-100 mb-8">
-                        {t('home.cta_description')}
-                    </p>
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        <Button size="lg" variant="secondary" asChild>
-                            <Link href="/contact">
-                                <Mail className="w-5 h-5 mr-2" />
-                                {t('home.start_conversation')}
-                            </Link>
-                        </Button>
-                        <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white/10" asChild>
-                            <Link href="/projects">
-                                <Eye className="w-5 h-5 mr-2" />
-                                {t('home.view_work')}
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </section>
-
-            {/* Footer */}
-            <Footer portfolioOwner={portfolioOwner} />
-        </AuthenticatedLayout>
+            <CTASection />
+        </PublicLayout>
     );
 }

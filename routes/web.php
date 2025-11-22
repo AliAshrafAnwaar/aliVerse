@@ -19,11 +19,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Home route with role-based redirect
-Route::get('/', HomeController::class)->name('home.redirect');
-
-// Home page for regular users
-Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+// Public Home route - Shows Ali's portfolio (user ID 1) - no auth required
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/welcome', function () {
     return Inertia::render('Welcome', [

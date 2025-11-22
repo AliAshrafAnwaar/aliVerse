@@ -16,38 +16,13 @@ use Inertia\Inertia;
 class HomeController extends Controller
 {
     /**
-     * Handle the incoming request for role-based redirect.
-     */
-    public function __invoke(Request $request)
-    {
-        $user = Auth::user();
-        
-        // // If user is admin, redirect to admin dashboard
-        // if ($user && $user->isAdmin()) {
-        //     return redirect()->route('admin.dashboard');
-        // }
-        
-        // If user is regular user, redirect to home
-        // if ($user) {
-            return redirect()->route('home');
-        // }
-        
-        // If not authenticated, redirect to welcome page
-        return redirect()->route('welcome');
-    }
-
-    /**
-     * Show the home page for regular users.
+     * Show the public home page - displays Ali's portfolio (user ID 1)
+     * No authentication required
      */
     public function index(Request $request)
     {
-        // Redirect admins to admin dashboard
-        // if (Auth::user() && Auth::user()->isAdmin()) {
-        //     return redirect()->route('admin.dashboard');
-        // }
-
-        // Get portfolio owner (admin user - ID 1) instead of current authenticated user
-        $portfolioOwner = \App\Models\User::findOrFail(1);
+        // Always show Ali's portfolio (user ID 1) - no auth required
+        $portfolioOwner = User::findOrFail(1);
 
         // Get comprehensive portfolio data using model scopes (same as PortfolioController)
         $skills = Skill::ordered()->get();

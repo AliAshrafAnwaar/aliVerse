@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -12,13 +12,7 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
     const { t } = useTranslation();
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    {t('profile.title', 'Profile Settings')}
-                </h2>
-            }
-        >
+        <PublicLayout user={auth.user}>
             <Head title={t('profile.title', 'Profile Settings')} />
 
             <div className="py-12">
@@ -50,6 +44,6 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </PublicLayout>
     );
 }

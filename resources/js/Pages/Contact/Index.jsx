@@ -24,7 +24,6 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PublicLayout from '@/Layouts/PublicLayout';
-import Footer from '@/Components/Footer';
 
 export default function Index({ contact }) {
   const { t } = useTranslation();
@@ -124,7 +123,7 @@ export default function Index({ contact }) {
   ].filter(link => link.url);
 
   return (
-    <PublicLayout user={auth?.user}>
+    <PublicLayout user={auth?.user} portfolioOwner={contact.user || auth?.user}>
       <Head title={contact.meta_title || `${contact.title} - ${contact.user?.name}`} />
       
       {contact.meta_description && (
@@ -429,9 +428,6 @@ export default function Index({ contact }) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer portfolioOwner={contact.user || auth?.user} />
     </PublicLayout>
   );
 }

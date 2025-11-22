@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { usePage } from '@inertiajs/react';
@@ -84,7 +84,7 @@ export default function Portfolio({ skills, groupedSkills, experiences, educatio
     };
 
     return (
-        <AuthenticatedLayout user={user} header={t('navigation.portfolio', 'Portfolio')}>
+        <PublicLayout user={user}>
             <Head title={t('navigation.portfolio', 'Portfolio')} />
 
             <div className="py-8">
@@ -402,6 +402,6 @@ export default function Portfolio({ skills, groupedSkills, experiences, educatio
                     </Card>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </PublicLayout>
     );
 }

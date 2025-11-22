@@ -1,199 +1,225 @@
-import ApplicationFullLogo from '@/Components/ApplicationFullLogo';
-import { Toaster } from '@/Components/ui/toaster';
-import { Link } from '@inertiajs/react';
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import Dropdown from '@/Components/Dropdown';
+import NavLink from '@/Components/NavLink';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import ThemeToggle from '@/Components/ThemeToggle';
 import LanguageToggle from '@/Components/LanguageToggle';
-import { useTranslation } from 'react-i18next';
+import { Toaster } from '@/Components/ui/toaster';
+import { Container, Flex, Stack, Box } from '@/Components/Layout';
+import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Button } from '@/Components/ui/button';
-import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import Footer from '@/Components/Footer';
 
-export default function PublicLayout({ user, children }) {
+export default function PublicLayout({ user, children, portfolioOwner }) {
+    const { props } = usePage();
     const { t } = useTranslation();
-    const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
+    
+    // Use provided portfolioOwner or fallback to fetching user ID 1 data from props
+    const footerOwner = portfolioOwner || props.portfolioOwner || user;
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Navigation Header */}
-            <nav className="border-b border-border bg-card">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
+        <Box  className="min-h-screen bg-background flex flex-col">
+            <Box as="nav" className="border-b border-border bg-card">
+                <Container>
+                    <Flex justify="between" align="center" className="h-16">
+                        {/* Logo and Navigation - Left */}
+                        <Flex align="center">
+                            <Flex align="center" className="shrink-0">
                                 <Link href="/">
-                                    <div className="flex items-center">
-                                        <ApplicationFullLogo className="h-10 w-10" />
-                                        <span className="font-bold text-lg mx-2">{t('common.long_welcome')}</span>
-                                    </div>
+                                    <Flex align="center" className="gap-2">
+                                        <ApplicationLogo className=" sm:w-12 flex-shrink-0" />
+                                        <Box as="span" className="font-bold text-sm sm:text-lg truncate max-w-[120px] sm:max-w-none">
+                                            {t('common.long_welcome')}
+                                        </Box>
+                                    </Flex>
                                 </Link>
-                            </div>
-                        </div>
+                            </Flex>
 
-                        <div className="flex items-center gap-4">
-                            <ThemeToggle />
-                            <LanguageToggle />
-                            
-                            {/* Navigation Links */}
-                            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                                <Link
-                                    href="/"
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                                >
+                            <Box className="hidden lg:ms-6 lg:flex gap-4 xl:gap-8">
+                                <NavLink href={route('home')} active={route().current('home')}>
                                     {t('navigation.home')}
-                                </Link>
-                                <Link
-                                    href="/projects"
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                                >
-                                    {t('navigation.projects')}
-                                </Link>
-                                <Link
-                                    href="/blog"
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                                >
+                                </NavLink>
+                                <NavLink href={route('posts.index')} active={route().current('posts.index')}>
                                     {t('navigation.blog')}
-                                </Link>
-                                <Link
-                                    href="/contact"
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                                >
+                                </NavLink>
+                                <NavLink href={route('contact.index')} active={route().current('contact.index')}>
                                     {t('navigation.contact')}
-                                </Link>
-                            </div>
+                                </NavLink>
+                            </Box>
+                        </Flex>
 
-                            {/* Auth Links */}
-                            <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
-                                {user ? (
-                                    <>
-                                        <Link
-                                            href={user.is_admin ? route('admin.dashboard') : route('home')}
-                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-primary hover:bg-secondary transition-colors"
-                                        >
-                                            <UserIcon className="w-4 h-4 mr-2" />
-                                            {user.name}
-                                        </Link>
-                                        <Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-red-600 hover:bg-secondary transition-colors"
-                                        >
-                                            <LogOut className="w-4 h-4 mr-2" />
-                                            {t('auth.logout', 'Logout')}
-                                        </Link>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-foreground hover:text-primary hover:bg-secondary transition-colors"
-                                        >
-                                            {t('auth.login')}
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
-                                        >
-                                            {t('auth.register')}
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        {/* Right Buttons - User Actions */}
+                        <Flex align="center" className="gap-1 sm:gap-2">
+                            {user ? (
+                                <Box className="hidden sm:block">
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
+                                            <span className="inline-flex rounded-md">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
+                                                >
+                                                    <span className="hidden md:inline">{user.name}</span>
+                                                    <span className="md:hidden">{user.name.split(' ')[0]}</span>
 
-                {/* Responsive Navigation Menu */}
-                <div className="sm:hidden">
-                    <div className="pt-2 pb-3 space-y-1">
-                        <Link
-                            href="/"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-primary hover:bg-secondary hover:border-primary transition-colors"
-                        >
+                                                    <svg
+                                                        className="ms-1 sm:ms-2 -me-1 h-4 w-4"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        </Dropdown.Trigger>
+
+                                        <Dropdown.Content>
+                                            <Dropdown.Link href={route('profile.edit')}>
+                                                {t('navigation.profile')}
+                                            </Dropdown.Link>
+                                            <Dropdown.Link href={route('logout')} method="post" as="button">
+                                                {t('auth.logout')}
+                                            </Dropdown.Link>
+                                        </Dropdown.Content>
+                                    </Dropdown>
+                                </Box>
+                            ) : (
+                                <Box className="hidden sm:block">
+                                    <Link
+                                        href={route('login')}
+                                        className="inline-flex items-center px-2 sm:px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 focus:outline-none transition ease-in-out duration-150"
+                                    >
+                                        {t('common.login')}
+                                    </Link>
+                                </Box>
+                            )}
+
+                            <Flex align="center" className="hidden sm:flex gap-1 sm:gap-2">
+                                <ThemeToggle />
+                                <LanguageToggle />
+                            </Flex>
+
+                            <Flex align="center" className="-me-2 lg:hidden">
+                                <button
+                                    onClick={() =>
+                                        setShowingNavigationDropdown(
+                                            (previousState) => !previousState,
+                                        )
+                                    }
+                                    className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 focus:text-gray-500 dark:focus:text-gray-100 transition duration-150 ease-in-out"
+                                >
+                                    <svg
+                                        className="h-6 w-6"
+                                        stroke="currentColor"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        {showingNavigationDropdown ? (
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        ) : (
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M4 6h16M4 12h16M4 18h16"
+                                            />
+                                        )}
+                                    </svg>
+                                </button>
+                            </Flex>
+                        </Flex>
+                    </Flex>
+                </Container>
+
+                <Box
+                    className={
+                        (showingNavigationDropdown ? "block" : "hidden") +
+                        " lg:hidden"
+                    }
+                >
+                    <Stack spacing="1" className="pt-2 pb-3">
+                        <ResponsiveNavLink href={route('home')}>
                             {t('navigation.home')}
-                        </Link>
-                        <Link
-                            href="/projects"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-primary hover:bg-secondary hover:border-primary transition-colors"
-                        >
-                            {t('navigation.projects')}
-                        </Link>
-                        <Link
-                            href="/blog"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-primary hover:bg-secondary hover:border-primary transition-colors"
-                        >
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('posts.index')}>
                             {t('navigation.blog')}
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground hover:text-primary hover:bg-secondary hover:border-primary transition-colors"
-                        >
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('contact.index')}>
                             {t('navigation.contact')}
-                        </Link>
-                    </div>
-                    <div className="pt-4 pb-3 border-t border-border">
-                        <div className="flex items-center px-4 space-x-2">
-                            <div className="flex-1">
-                                {user ? (
-                                    <>
-                                        <div className="mb-3">
-                                            <p className="text-base font-medium text-foreground">{user.name}</p>
-                                            <p className="text-sm text-muted-foreground">{user.email}</p>
-                                        </div>
-                                        <Link
-                                            href={user.is_admin ? route('admin.dashboard') : route('home')}
-                                            className="block text-base font-medium text-foreground hover:text-primary transition-colors mb-2"
-                                        >
-                                            <UserIcon className="w-4 h-4 inline mr-2" />
-                                            {t('navigation.dashboard', 'Dashboard')}
-                                        </Link>
-                                        <Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                            className="block text-base font-medium text-foreground hover:text-red-600 transition-colors"
-                                        >
-                                            <LogOut className="w-4 h-4 inline mr-2" />
-                                            {t('auth.logout', 'Logout')}
-                                        </Link>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="block text-base font-medium text-foreground hover:text-primary transition-colors mb-2"
-                                        >
-                                            {t('auth.login')}
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="block text-sm text-muted-foreground hover:text-primary transition-colors"
-                                        >
-                                            {t('auth.register')}
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+                        </ResponsiveNavLink>
+                    </Stack>
+
+                    {user ? (
+                        <Box className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                            <Box className="px-4">
+                                <Box className="font-medium text-base text-gray-800 dark:text-gray-200">
+                                    {user.name}
+                                </Box>
+                                <Box className="font-medium text-sm text-gray-500 dark:text-gray-400 break-all">
+                                    {user.email}
+                                </Box>
+                            </Box>
+
+                            <Stack spacing="1" className="mt-3">
+                                <ResponsiveNavLink href={route('profile.edit')}>
+                                    {t('navigation.profile')}
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    method="post"
+                                    href={route('logout')}
+                                    as="button"
+                                >
+                                    {t('auth.logout')}
+                                </ResponsiveNavLink>
+                            </Stack>
+
+                            {/* Mobile Theme and Language Toggles */}
+                            <Flex className="mt-3 px-4 gap-2 sm:hidden">
+                                <ThemeToggle />
+                                <LanguageToggle />
+                            </Flex>
+                        </Box>
+                    ) : (
+                        <Box className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                            <Stack spacing="1" className="mt-3">
+                                <ResponsiveNavLink href={route('login')}>
+                                    {t('common.login')}
+                                </ResponsiveNavLink>
+                            </Stack>
+
+                            {/* Mobile Theme and Language Toggles for guests */}
+                            <Flex className="mt-3 px-4 gap-2 sm:hidden">
+                                <ThemeToggle />
+                                <LanguageToggle />
+                            </Flex>
+                        </Box>
+                    )}
+                </Box>
+            </Box>
 
             {/* Main Content */}
-            <main className="flex-1">
+            <Box as="main" className="flex-1">
                 {children}
-            </main>
+            </Box>
 
-            {/* Footer */}
-            <footer className="border-t border-border bg-card mt-auto">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="text-center text-sm text-muted-foreground">
-                        <p>&copy; 2024 {t('common.app_name')}. {t('common.all_rights_reserved')}.</p>
-                    </div>
-                </div>
-            </footer>
+            {/* Footer - Only render if we have portfolio owner data */}
+            {footerOwner && <Footer portfolioOwner={footerOwner} />}
 
             <Toaster />
-        </div>
+        </Box>
     );
 }
