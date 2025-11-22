@@ -1,8 +1,16 @@
 import { Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 export default function LanguageToggle() {
     const { i18n } = useTranslation();
+
+    // Apply saved language direction on component mount
+    useEffect(() => {
+        const savedLanguage = localStorage.getItem('language') || 'en';
+        document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = savedLanguage;
+    }, []);
 
     const toggleLanguage = () => {
         const newLang = i18n.language === 'en' ? 'ar' : 'en';

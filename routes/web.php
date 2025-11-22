@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PortfolioController;
@@ -48,6 +49,7 @@ Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('posts.sh
 
 // Public Contact Route
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Reaction Routes (requires authentication)
 Route::middleware('auth')->group(function () {
@@ -111,6 +113,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('experiences', ExperienceController::class);
     Route::resource('educations', EducationController::class);
     Route::resource('testimonials', TestimonialController::class);
+    
+    // Admin Contact Submissions Routes
+    Route::get('contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
+    Route::get('contact-submissions/{submission}', [ContactSubmissionController::class, 'show'])->name('contact-submissions.show');
+    Route::delete('contact-submissions/{submission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+    Route::post('contact-submissions/{submission}/mark-read', [ContactSubmissionController::class, 'markAsRead'])->name('contact-submissions.mark-read');
+    Route::post('contact-submissions/{submission}/mark-unread', [ContactSubmissionController::class, 'markAsUnread'])->name('contact-submissions.mark-unread');
+    Route::post('contact-submissions/bulk-delete', [ContactSubmissionController::class, 'bulkDestroy'])->name('contact-submissions.bulk-delete');
+    Route::post('contact-submissions/bulk-mark-read', [ContactSubmissionController::class, 'bulkMarkAsRead'])->name('contact-submissions.bulk-mark-read');
+    Route::post('contact-submissions/bulk-mark-unread', [ContactSubmissionController::class, 'bulkMarkAsUnread'])->name('contact-submissions.bulk-mark-unread');
 });
 
 Route::middleware('auth')->group(function () {

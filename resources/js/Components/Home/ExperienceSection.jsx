@@ -4,6 +4,19 @@ import { useTranslation } from 'react-i18next';
 
 export default function ExperienceSection({ experiences, currentExperience }) {
     const { t } = useTranslation();
+
+    // Memoize combined experiences array
+    const allExperiences = useMemo(() => {
+        const pastExperiences = experiences?.filter(exp => !exp.is_current) || [];
+        return currentExperience 
+            ? [...pastExperiences, currentExperience] 
+            : pastExperiences;
+    }, [experiences, currentExperience]);
+
+    // Don't render section if no experience data
+    if (!allExperiences || allExperiences.length === 0) {
+        return null;
+    }
     const containerRef = useRef(null);
     const cardRefs = useRef([]);
     const nodeRefs = useRef([]);
@@ -28,14 +41,6 @@ export default function ExperienceSection({ experiences, currentExperience }) {
         const end = item.end_date ? formatDate(item.end_date) : 'Present';
         return `${start} - ${end}`;
     }, [formatDate]);
-
-    // Memoize combined experiences array
-    const allExperiences = useMemo(() => {
-        const pastExperiences = experiences.filter(exp => !exp.is_current);
-        return currentExperience 
-            ? [...pastExperiences, currentExperience] 
-            : pastExperiences;
-    }, [experiences, currentExperience]);
 
     // Debounce helper
     const debounce = useCallback((func, wait) => {

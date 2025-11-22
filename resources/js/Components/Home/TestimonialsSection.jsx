@@ -12,6 +12,11 @@ import { useTranslation } from 'react-i18next';
 export default function TestimonialsSection({ testimonials }) {
     const { t } = useTranslation();
 
+    // Don't render section if no testimonials data
+    if (!testimonials || testimonials.length === 0) {
+        return null;
+    }
+
     // Get top 3 testimonials sorted by rating
     const getTopTestimonials = () => {
         return testimonials

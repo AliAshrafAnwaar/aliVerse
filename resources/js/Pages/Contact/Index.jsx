@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PublicLayout from '@/Layouts/PublicLayout';
+import ContactForm from '@/Components/Contact/ContactForm';
 
 export default function Index({ contact }) {
   const { t } = useTranslation();
@@ -398,6 +399,21 @@ export default function Index({ contact }) {
             </CardContent>
           </Card>
 
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t('contact.get_in_touch', "Get in Touch Directly")}
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              {t('contact.form_description', "Prefer to send a message directly? Fill out the form below and I'll respond to your email address.")}
+            </p>
+          </div>
+          <ContactForm />
         </div>
       </section>
 

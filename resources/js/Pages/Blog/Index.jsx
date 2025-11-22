@@ -107,7 +107,7 @@ export default function Index({ auth, posts, categories, tags, filters }) {
 
               {/* Filters Panel */}
               {showFilters && (
-                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="mt-4 p-4 rounded-lg">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Category Filter */}
                     <div>
@@ -115,14 +115,14 @@ export default function Index({ auth, posts, categories, tags, filters }) {
                         {t('blog.category')}
                       </label>
                       <Select
-                        value={filters.category || ''}
-                        onValueChange={(value) => handleFilterChange('category', value)}
+                        value={filters.category || 'all'}
+                        onValueChange={(value) => handleFilterChange('category', value === 'all' ? '' : value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t('blog.all_categories')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">{t('blog.all_categories')}</SelectItem>
+                          <SelectItem value="all">{t('blog.all_categories')}</SelectItem>
                           {categories.map((category) => (
                             <SelectItem key={category.id} value={category.id.toString()}>
                               {category.name}
@@ -135,17 +135,17 @@ export default function Index({ auth, posts, categories, tags, filters }) {
                     {/* Status Filter */}
                     <div>
                       <label className="text-sm font-medium mb-2 block">
-                        {t('blog.status')}
+                        {t('blog.status.value')}
                       </label>
                       <Select
-                        value={filters.status || ''}
-                        onValueChange={(value) => handleFilterChange('status', value)}
+                        value={filters.status || 'all'}
+                        onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t('blog.all_status')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">{t('blog.all_status')}</SelectItem>
+                          <SelectItem value="all">{t('blog.all_status')}</SelectItem>
                           <SelectItem value="draft">{t('blog.status.draft')}</SelectItem>
                           <SelectItem value="published">{t('blog.status.published')}</SelectItem>
                           <SelectItem value="scheduled">{t('blog.status.scheduled')}</SelectItem>
@@ -160,14 +160,14 @@ export default function Index({ auth, posts, categories, tags, filters }) {
                         {t('blog.featured')}
                       </label>
                       <Select
-                        value={filters.featured?.toString() || ''}
-                        onValueChange={(value) => handleFilterChange('featured', value === 'true')}
+                        value={filters.featured?.toString() || 'all'}
+                        onValueChange={(value) => handleFilterChange('featured', value === 'all' ? '' : value === 'true')}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t('blog.all_posts')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">{t('blog.all_posts')}</SelectItem>
+                          <SelectItem value="all">{t('blog.all_posts')}</SelectItem>
                           <SelectItem value="true">{t('blog.featured_only')}</SelectItem>
                           <SelectItem value="false">{t('blog.not_featured')}</SelectItem>
                         </SelectContent>

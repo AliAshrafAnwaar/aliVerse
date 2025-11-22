@@ -23,7 +23,7 @@ export default function PublicLayout({ user, children, portfolioOwner }) {
 
     return (
         <Box  className="min-h-screen bg-background flex flex-col">
-            <Box as="nav" className="border-b border-border bg-card">
+            <Box as="nav" className="border-b border-border bg-card p-2">
                 <Container>
                     <Flex justify="between" align="center" className="h-16">
                         {/* Logo and Navigation - Left */}
@@ -31,7 +31,7 @@ export default function PublicLayout({ user, children, portfolioOwner }) {
                             <Flex align="center" className="shrink-0">
                                 <Link href="/">
                                     <Flex align="center" className="gap-2">
-                                        <ApplicationLogo className=" sm:w-12 flex-shrink-0" />
+                                        <ApplicationLogo className="w-12 sm:w-12 flex-shrink-0" />
                                         <Box as="span" className="font-bold text-sm sm:text-lg truncate max-w-[120px] sm:max-w-none">
                                             {t('common.long_welcome')}
                                         </Box>

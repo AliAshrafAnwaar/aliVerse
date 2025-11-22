@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Http\Requests\StoreContactSubmissionRequest;
+use App\Http\Controllers\ContactSubmissionController;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +24,27 @@ class ContactController extends Controller
         $contact = Contact::where('user_id', 1)
             ->with('user')
             ->firstOr(function () {
-                return Contact::active()->with('user')->firstOrFail();
+                return Contact::active()->with('user')->first();
             });
+
+        // If no contact exists, create a default one for user ID 1
+        if (!$contact) {
+            $user = \App\Models\User::find(1);
+            if (!$user) {
+                $user = \App\Models\User::first();
+            }
+            
+            if ($user) {
+                $contact = Contact::create([
+                    'user_id' => $user->id,
+                    'title' => 'Contact Me',
+                    'email' => $user->email,
+                    'is_active' => true,
+                    'available_for_work' => true,
+                ]);
+                $contact->load('user');
+            }
+        }
 
         return Inertia::render('Contact/Index', [
             'contact' => $contact,
@@ -93,5 +114,15 @@ class ContactController extends Controller
         return redirect()
             ->route('admin.contact.edit')
             ->with('success', 'Contact information updated successfully!');
+    }
+
+    /**
+     * Store a new contact submission.
+     * Delegates to ContactSubmissionController for consistency.
+     */
+    public function store(StoreContactSubmissionRequest $request): RedirectResponse
+    {
+        $contactSubmissionController = new ContactSubmissionController();
+        return $contactSubmissionController->store($request);
     }
 }

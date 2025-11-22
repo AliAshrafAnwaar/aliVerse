@@ -7,6 +7,11 @@ import { useTranslation } from 'react-i18next';
 export default function DetailedSkillsSection({ groupedSkills, featuredSkills }) {
     const { t } = useTranslation();
 
+    // Don't render section if no skills data
+    if (!groupedSkills || Object.keys(groupedSkills).length === 0) {
+        return null;
+    }
+
     const getProficiencyLabel = (level) => {
         if (level >= 9) return { label: 'Expert', color: 'text-green-600 dark:text-green-400' };
         if (level >= 7) return { label: 'Advanced', color: 'text-blue-600 dark:text-blue-400' };
