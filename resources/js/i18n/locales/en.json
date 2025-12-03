@@ -46,6 +46,7 @@
     "home": "Home",
     "portfolio": "Technical Portfolio",
     "projects": "Projects",
+    "admin": "Admin",
     "blog": "Blog",
     "about": "About",
     "skills": "Skills",
@@ -187,7 +188,23 @@
       "draft": "Draft",
       "scheduled": "Scheduled",
       "archived": "Archived"
-    }
+    },
+    "main_category": "Main Category",
+    "subcategory": "Subcategory",
+    "all_subcategories": "All Subcategories",
+    "select_subcategory": "Select Subcategory",
+    "select_main_first": "Select main category first",
+    "filter_by_tags": "Filter by Tags",
+    "sort_by": "Sort By",
+    "sort": {
+      "latest": "Latest First",
+      "oldest": "Oldest First",
+      "popular": "Most Popular",
+      "title_asc": "Title (A-Z)",
+      "title_desc": "Title (Z-A)"
+    },
+    "draft_notice": "This post is saved as draft and won't be visible publicly. Change status to 'Published' to make it live.",
+    "publish_settings_description": "Control when and how this post appears on your blog."
   },
   "users": {
     "manage_users": "Manage Users",

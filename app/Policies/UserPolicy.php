@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class UserPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, User $model): bool
+    {
+        return $user->isAdmin() || $user->id === $model->id;
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, User $model): bool
+    {
+        return $user->isAdmin() || $user->id === $model->id;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, User $model): bool
+    {
+        // Admins can delete other users but not themselves
+        return $user->isAdmin() && $user->id !== $model->id;
+    }
+
+    /**
+     * Determine whether the user can toggle admin status.
+     */
+    public function toggleAdmin(User $user, User $model): bool
+    {
+        // Admins can toggle others' admin status, but not their own
+        return $user->isAdmin() && $user->id !== $model->id;
+    }
+
+    /**
+     * Determine whether the user can ban/unban users.
+     */
+    public function toggleBan(User $user, User $model): bool
+    {
+        // Admins can ban others but not themselves
+        return $user->isAdmin() && $user->id !== $model->id;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, User $model): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, User $model): bool
+    {
+        return $user->isAdmin() && $user->id !== $model->id;
+    }
+}

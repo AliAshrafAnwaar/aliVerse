@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
-import ENDPOINTS from '@/api/endpoints';
+import { WEB_ENDPOINTS } from '@/api/endpoints';
 
 export default function Edit({ auth, contact }) {
   const { t } = useTranslation();
@@ -60,7 +60,7 @@ export default function Edit({ auth, contact }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    put(ENDPOINTS.CONTACT.ADMIN.UPDATE, {
+    put(WEB_ENDPOINTS.ADMIN.CONTACT.UPDATE, {
       preserveState: true,
       preserveScroll: true,
       onSuccess: () => {

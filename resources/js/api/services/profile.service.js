@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import API_ENDPOINTS from '../endpoints';
+import { WEB_ENDPOINTS } from '../endpoints';
 
 /**
  * Profile Service
@@ -12,7 +12,7 @@ const profileService = {
      * @param {Object} options - Inertia options
      */
     updateBasic(data, options = {}) {
-        return router.patch(API_ENDPOINTS.PROFILE.UPDATE_BASIC, data, {
+        return router.patch(WEB_ENDPOINTS.PROFILE.UPDATE_BASIC, data, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
@@ -29,7 +29,7 @@ const profileService = {
      * @param {Object} options - Inertia options
      */
     updateAdvanced(data, options = {}) {
-        return router.put(API_ENDPOINTS.PROFILE.UPDATE_ADVANCED, data, {
+        return router.put(WEB_ENDPOINTS.PROFILE.UPDATE_ADVANCED, data, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
@@ -52,7 +52,7 @@ const profileService = {
         // Explicit method override for Laravel when using multipart, matching avatar route (PATCH)
         formData.append('_method', 'PATCH');
 
-        return router.post(API_ENDPOINTS.PROFILE.UPDATE_AVATAR, formData, {
+        return router.post(WEB_ENDPOINTS.PROFILE.UPDATE_AVATAR, formData, {
             forceFormData: true,
             preserveScroll: true,
             preserveState: true,
@@ -69,7 +69,7 @@ const profileService = {
      * @param {Object} options - Inertia options
      */
     removeAvatar(options = {}) {
-        return router.delete(API_ENDPOINTS.PROFILE.REMOVE_AVATAR, {
+        return router.delete(WEB_ENDPOINTS.PROFILE.REMOVE_AVATAR, {
             preserveScroll: true,
             onSuccess: () => {
                 // Reload auth data to update profile completion
@@ -85,7 +85,7 @@ const profileService = {
      * @param {Object} options - Inertia options
      */
     updatePassword(data, options = {}) {
-        return router.put(API_ENDPOINTS.PROFILE.UPDATE_PASSWORD, data, {
+        return router.put(WEB_ENDPOINTS.PROFILE.UPDATE_PASSWORD, data, {
             preserveScroll: true,
             preserveState: true,
             ...options,
@@ -98,7 +98,7 @@ const profileService = {
      * @param {Object} options - Inertia options
      */
     deleteAccount(password, options = {}) {
-        return router.delete(API_ENDPOINTS.PROFILE.DELETE, {
+        return router.delete(WEB_ENDPOINTS.PROFILE.DELETE, {
             data: { password },
             ...options,
         });

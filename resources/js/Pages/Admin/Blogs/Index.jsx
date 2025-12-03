@@ -17,20 +17,20 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
-import ENDPOINTS from '@/api/endpoints';
+import { WEB_ENDPOINTS } from '@/api/endpoints';
 
 export default function AdminIndex({ auth, posts, categories, tags, filters }) {
   const { t } = useTranslation();
 
   const handleSearch = (e) => {
-    router.get(ENDPOINTS.POSTS.ADMIN.LIST, { ...filters, search: e.target.value }, {
+    router.get(WEB_ENDPOINTS.ADMIN.POSTS.LIST, { ...filters, search: e.target.value }, {
       preserveState: true,
       preserveScroll: true,
     });
   };
 
   const handleFilter = (key, value) => {
-    router.get(ENDPOINTS.POSTS.ADMIN.LIST, { ...filters, [key]: value }, {
+    router.get(WEB_ENDPOINTS.ADMIN.POSTS.LIST, { ...filters, [key]: value }, {
       preserveState: true,
       preserveScroll: true,
     });
@@ -38,7 +38,7 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
 
   const handleDelete = (id) => {
     if (confirm(t('blog.confirm_delete'))) {
-      router.delete(ENDPOINTS.POSTS.ADMIN.DELETE(id));
+      router.delete(WEB_ENDPOINTS.ADMIN.POSTS.DELETE(id));
     }
   };
 
@@ -72,7 +72,7 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
                 {t('blog.manage_posts_description')}
               </p>
             </div>
-            <Link href={ENDPOINTS.POSTS.ADMIN.CREATE}>
+            <Link href={WEB_ENDPOINTS.ADMIN.POSTS.CREATE}>
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
                 {t('blog.create_post')}
@@ -162,7 +162,7 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
                       : t('blog.no_posts_yet')}
                   </p>
                   {!filters.search && !filters.status && !filters.category && !filters.featured && (
-                    <Link href={ENDPOINTS.POSTS.ADMIN.CREATE} className="mt-4 inline-block">
+                    <Link href={WEB_ENDPOINTS.ADMIN.POSTS.CREATE} className="mt-4 inline-block">
                       <Button>
                         <Plus className="w-4 h-4 mr-2" />
                         {t('blog.create_first_post')}
@@ -199,7 +199,7 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
                             <div>
                               <div className="flex items-center gap-2">
                                 <Link
-                                  href={ENDPOINTS.POSTS.VIEW(post.slug)}
+                                  href={WEB_ENDPOINTS.POSTS.VIEW(post.slug)}
                                   target="_blank"
                                   className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400"
                                 >
@@ -243,12 +243,12 @@ export default function AdminIndex({ auth, posts, categories, tags, filters }) {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <Link href={ENDPOINTS.POSTS.VIEW(post.slug)} target="_blank">
+                              <Link href={WEB_ENDPOINTS.POSTS.VIEW(post.slug)} target="_blank">
                                 <Button variant="ghost" size="sm">
                                   <Eye className="w-4 h-4" />
                                 </Button>
                               </Link>
-                              <Link href={ENDPOINTS.POSTS.ADMIN.EDIT(post.id)}>
+                              <Link href={WEB_ENDPOINTS.ADMIN.POSTS.EDIT(post.id)}>
                                 <Button variant="ghost" size="sm">
                                   <Edit className="w-4 h-4" />
                                 </Button>

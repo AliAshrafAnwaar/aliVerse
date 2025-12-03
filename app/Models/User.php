@@ -64,7 +64,15 @@ class User extends Authenticatable
      *
      * @var array<string>
      */
-    protected $appends = ['avatar_url', 'profile_completion'];
+    protected $appends = ['avatar_url', 'profile_completion', 'is_admin'];
+
+    /**
+     * Get the admin status as a property.
+     */
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     /**
      * Check if the user is an admin.
@@ -72,6 +80,33 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Scope: Search users by name or email.
+     */
+    public function scopeSearch($query, ?string $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
+    }
+
+    /**
+     * Scope: Filter by role.
+     */
+    public function scopeRole($query, string $role)
+    {
+        return $query->where('role', $role);
+    }
+
+    /**
+     * Scope: Filter only admins.
+     */
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
     }
 
     /**

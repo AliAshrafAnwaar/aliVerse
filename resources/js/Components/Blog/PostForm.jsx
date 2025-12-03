@@ -26,6 +26,7 @@ export default function PostForm({
     title: post?.title || '',
     excerpt: post?.excerpt || '',
     content: post?.content || '',
+    main_category_id: post?.category?.parent_id || '',
     category_id: post?.category_id || '',
     meta_description: post?.meta_description || '',
     meta_keywords: post?.meta_keywords || '',
@@ -62,13 +63,20 @@ export default function PostForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('PostForm submitting data:', data);
     onSubmit(data);
   };
 
   const handleStatusChange = (status) => {
-    setData('status', status);
+    // If changing to published and no published_at set, set it to now
     if (status === 'published' && !data.published_at) {
-      setData('published_at', new Date().toISOString().slice(0, 16));
+      setData({
+        ...data,
+        status: status,
+        published_at: new Date().toISOString().slice(0, 16),
+      });
+    } else {
+      setData('status', status);
     }
   };
 
@@ -175,6 +183,9 @@ export default function PostForm({
           <Card>
             <CardHeader>
               <CardTitle>{t('blog.publish_settings')}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {data.status === 'draft' ? t('blog.draft_notice') : t('blog.publish_settings_description')}
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -227,22 +238,67 @@ export default function PostForm({
             <CardHeader>
               <CardTitle>{t('blog.category')}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Select value={data.category_id?.toString()} onValueChange={(value) => setData('category_id', value ? parseInt(value) : '')}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('blog.select_category')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id.toString()}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.category_id && (
-                <p className="text-red-500 text-sm mt-1">{errors.category_id}</p>
-              )}
+            <CardContent className="space-y-4">
+              {/* Main Category */}
+              <div>
+                <Label className="text-sm font-medium mb-2 block">{t('blog.main_category')}</Label>
+                <Select 
+                  value={data.main_category_id?.toString() || ''} 
+                  onValueChange={(value) => {
+                    setData('main_category_id', value ? parseInt(value) : '');
+                    setData('category_id', ''); // Reset subcategory when main changes
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('blog.select_category')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.filter(c => c.type === 'main' || !c.parent_id).map((category) => (
+                      <SelectItem key={category.id} value={category.id.toString()}>
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: category.color || '#6366f1' }}
+                          />
+                          {category.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Subcategory */}
+              <div>
+                <Label className="text-sm font-medium mb-2 block">{t('blog.subcategory')}</Label>
+                <Select 
+                  value={data.category_id?.toString() || ''} 
+                  onValueChange={(value) => setData('category_id', value ? parseInt(value) : '')}
+                  disabled={!data.main_category_id}
+                >
+                  <SelectTrigger className={!data.main_category_id ? 'opacity-50' : ''}>
+                    <SelectValue placeholder={data.main_category_id ? t('blog.select_subcategory') : t('blog.select_main_first')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories
+                      .filter(c => c.parent_id && c.parent_id === data.main_category_id)
+                      .map((category) => (
+                        <SelectItem key={category.id} value={category.id.toString()}>
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: category.color || '#6366f1' }}
+                            />
+                            {category.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                {errors.category_id && (
+                  <p className="text-red-500 text-sm mt-1">{errors.category_id}</p>
+                )}
+              </div>
             </CardContent>
           </Card>
 

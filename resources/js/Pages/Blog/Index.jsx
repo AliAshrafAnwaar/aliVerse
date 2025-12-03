@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
-import { Search, Filter, Grid, List, Plus } from 'lucide-react';
+import { Search, Filter, Grid, List, Plus, X, ArrowUpDown, Tag as TagIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PublicLayout from '@/Layouts/PublicLayout';
 import PostGrid from '@/Components/Blog/PostGrid';
@@ -16,6 +16,20 @@ export default function Index({ auth, posts, categories, tags, filters }) {
   const [viewMode, setViewMode] = useState('grid');
   const [searchTerm, setSearchTerm] = useState(filters.search || '');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedTags, setSelectedTags] = useState(filters.tags ? filters.tags.split(',') : []);
+
+  // Separate main categories and subcategories
+  const mainCategories = useMemo(() => 
+    categories.filter(c => c.type === 'main' || !c.parent_id), 
+    [categories]
+  );
+  
+  const subCategories = useMemo(() => {
+    if (!filters.main_category) return [];
+    return categories.filter(c => 
+      c.parent_id && c.parent_id.toString() === filters.main_category.toString()
+    );
+  }, [categories, filters.main_category]);
 
   // Debounced search
   useEffect(() => {
@@ -33,18 +47,37 @@ export default function Index({ auth, posts, categories, tags, filters }) {
   }, [searchTerm]);
 
   const handleFilterChange = (key, value) => {
+    const newFilters = { ...filters, [key]: value };
+    
+    // Reset subcategory when main category changes
+    if (key === 'main_category') {
+      newFilters.category = '';
+    }
+    
     router.get(
       route('posts.index'),
-      { ...filters, [key]: value },
+      newFilters,
       { preserveState: true, preserveScroll: true }
     );
   };
 
+  const handleTagToggle = (tagId) => {
+    const tagIdStr = tagId.toString();
+    const newTags = selectedTags.includes(tagIdStr)
+      ? selectedTags.filter(id => id !== tagIdStr)
+      : [...selectedTags, tagIdStr];
+    
+    setSelectedTags(newTags);
+    handleFilterChange('tags', newTags.join(','));
+  };
+
   const clearFilters = () => {
+    setSelectedTags([]);
+    setSearchTerm('');
     router.get(route('posts.index'), {}, { preserveState: true });
   };
 
-  const hasActiveFilters = filters.search || filters.category || filters.status || filters.featured;
+  const hasActiveFilters = filters.search || filters.category || filters.main_category || filters.featured || filters.tags || filters.sort;
   const activeFilterCount = Object.keys(filters).filter((key) => !!filters[key]).length;
 
   return (
@@ -107,49 +140,86 @@ export default function Index({ auth, posts, categories, tags, filters }) {
 
               {/* Filters Panel */}
               {showFilters && (
-                <div className="mt-4 p-4 rounded-lg">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Category Filter */}
+                <div className="mt-4 p-4 rounded-lg bg-muted/30">
+                  {/* Category Filters Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    {/* Main Category Filter */}
                     <div>
                       <label className="text-sm font-medium mb-2 block">
-                        {t('blog.category')}
+                        {t('blog.main_category')}
                       </label>
                       <Select
-                        value={filters.category || 'all'}
-                        onValueChange={(value) => handleFilterChange('category', value === 'all' ? '' : value)}
+                        value={filters.main_category || 'all'}
+                        onValueChange={(value) => handleFilterChange('main_category', value === 'all' ? '' : value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t('blog.all_categories')} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">{t('blog.all_categories')}</SelectItem>
-                          {categories.map((category) => (
+                          {mainCategories.map((category) => (
                             <SelectItem key={category.id} value={category.id.toString()}>
-                              {category.name}
+                              <div className="flex items-center gap-2">
+                                <div 
+                                  className="w-3 h-3 rounded-full" 
+                                  style={{ backgroundColor: category.color || '#6366f1' }}
+                                />
+                                {category.name}
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Status Filter */}
+                    {/* Subcategory Filter */}
                     <div>
                       <label className="text-sm font-medium mb-2 block">
-                        {t('blog.status.value')}
+                        {t('blog.subcategory')}
                       </label>
                       <Select
-                        value={filters.status || 'all'}
-                        onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
+                        value={filters.category || 'all'}
+                        onValueChange={(value) => handleFilterChange('category', value === 'all' ? '' : value)}
+                        disabled={!filters.main_category}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('blog.all_status')} />
+                        <SelectTrigger className={!filters.main_category ? 'opacity-50' : ''}>
+                          <SelectValue placeholder={filters.main_category ? t('blog.select_subcategory') : t('blog.select_main_first')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">{t('blog.all_status')}</SelectItem>
-                          <SelectItem value="draft">{t('blog.status.draft')}</SelectItem>
-                          <SelectItem value="published">{t('blog.status.published')}</SelectItem>
-                          <SelectItem value="scheduled">{t('blog.status.scheduled')}</SelectItem>
-                          <SelectItem value="archived">{t('blog.status.archived')}</SelectItem>
+                          <SelectItem value="all">{t('blog.all_subcategories')}</SelectItem>
+                          {subCategories.map((category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              <div className="flex items-center gap-2">
+                                <div 
+                                  className="w-3 h-3 rounded-full" 
+                                  style={{ backgroundColor: category.color || '#6366f1' }}
+                                />
+                                {category.name}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Sort Filter */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">
+                        {t('blog.sort_by')}
+                      </label>
+                      <Select
+                        value={filters.sort || 'latest'}
+                        onValueChange={(value) => handleFilterChange('sort', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="latest">{t('blog.sort.latest')}</SelectItem>
+                          <SelectItem value="oldest">{t('blog.sort.oldest')}</SelectItem>
+                          <SelectItem value="popular">{t('blog.sort.popular')}</SelectItem>
+                          <SelectItem value="title_asc">{t('blog.sort.title_asc')}</SelectItem>
+                          <SelectItem value="title_desc">{t('blog.sort.title_desc')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -173,18 +243,46 @@ export default function Index({ auth, posts, categories, tags, filters }) {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
 
-                    {/* Clear Filters */}
-                    <div className="flex items-end">
-                      <Button
-                        variant="outline"
-                        onClick={clearFilters}
-                        disabled={!hasActiveFilters}
-                        className="w-full"
-                      >
-                        {t('common.clear_filters')}
-                      </Button>
+                  {/* Tags Section */}
+                  <div className="border-t pt-4">
+                    <label className="text-sm font-medium mb-3 block flex items-center gap-2">
+                      <TagIcon className="w-4 h-4" />
+                      {t('blog.filter_by_tags')}
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {tags.map((tag) => (
+                        <Badge
+                          key={tag.id}
+                          variant={selectedTags.includes(tag.id.toString()) ? 'default' : 'outline'}
+                          className="cursor-pointer hover:opacity-80 transition-opacity"
+                          style={{
+                            backgroundColor: selectedTags.includes(tag.id.toString()) ? tag.color : 'transparent',
+                            borderColor: tag.color,
+                            color: selectedTags.includes(tag.id.toString()) ? '#fff' : tag.color,
+                          }}
+                          onClick={() => handleTagToggle(tag.id)}
+                        >
+                          {tag.name}
+                          {selectedTags.includes(tag.id.toString()) && (
+                            <X className="w-3 h-3 ml-1" />
+                          )}
+                        </Badge>
+                      ))}
                     </div>
+                  </div>
+
+                  {/* Clear Filters Button */}
+                  <div className="border-t pt-4 mt-4 flex justify-end">
+                    <Button
+                      variant="outline"
+                      onClick={clearFilters}
+                      disabled={!hasActiveFilters}
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      {t('common.clear_filters')}
+                    </Button>
                   </div>
                 </div>
               )}

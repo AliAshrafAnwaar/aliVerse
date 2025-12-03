@@ -5,7 +5,7 @@ import { ArrowLeft, Save, Eye, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
 import PostForm from '@/Components/Blog/PostForm';
-import ENDPOINTS from '@/api/endpoints';
+import { WEB_ENDPOINTS } from '@/api/endpoints';
 
 export default function Edit({ auth, post, categories, tags }) {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ export default function Edit({ auth, post, categories, tags }) {
     console.log('Updating post with data:', formData);
     
     // Use POST with _method override for file uploads
-    router.post(ENDPOINTS.POSTS.ADMIN.UPDATE(post.id), {
+    router.post(WEB_ENDPOINTS.ADMIN.POSTS.UPDATE(post.id), {
       ...formData,
       _method: 'PUT',
     }, {
@@ -32,12 +32,12 @@ export default function Edit({ auth, post, categories, tags }) {
 
   const handleDelete = () => {
     if (confirm(t('blog.confirm_delete'))) {
-      router.delete(ENDPOINTS.POSTS.ADMIN.DELETE(post.id));
+      router.delete(WEB_ENDPOINTS.ADMIN.POSTS.DELETE(post.id));
     }
   };
 
   const handlePreview = () => {
-    window.open(ENDPOINTS.POSTS.VIEW(post.slug), '_blank');
+    window.open(WEB_ENDPOINTS.POSTS.VIEW(post.slug), '_blank');
   };
 
   return (

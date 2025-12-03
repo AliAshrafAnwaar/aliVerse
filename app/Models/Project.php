@@ -61,6 +61,14 @@ class Project extends Model
         return $query->orderBy('sort_order')->latest();
     }
 
+    public function scopeSearch($query, ?string $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
+
     public function getThumbnailUrlAttribute(): string
     {
         return $this->image ? '/storage/' . $this->image : '/images/default-project.jpg';

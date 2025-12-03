@@ -51,11 +51,16 @@ export default function ProfileSocialSection({ user }) {
         
         clearErrors();
         
-        profileService.updateAdvanced({
-            ...data,
-            name: user.name,
-            email: user.email,
-        }, {
+        // Filter out undefined values to prevent Inertia errors
+        const submitData = Object.fromEntries(
+            Object.entries({
+                ...data,
+                name: user.name,
+                email: user.email,
+            }).filter(([_, value]) => value !== undefined && value !== null)
+        );
+        
+        profileService.updateAdvanced(submitData, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {

@@ -1,21 +1,24 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Admin\SkillController;
-use App\Http\Controllers\Admin\ExperienceController;
-use App\Http\Controllers\Admin\EducationController;
-use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\UsersController;
+
+// Web Controllers (Inertia/redirect responses)
+use App\Http\Controllers\Web\PostController;
+use App\Http\Controllers\Web\ProjectController;
+use App\Http\Controllers\Web\UserController;
+use App\Http\Controllers\Web\ContactSubmissionController;
+use App\Http\Controllers\Web\SkillController;
+use App\Http\Controllers\Web\ExperienceController;
+use App\Http\Controllers\Web\EducationController;
+use App\Http\Controllers\Web\TestimonialController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -100,13 +103,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/blog/{post}/unpublish', [PostController::class, 'unpublish'])->name('posts.unpublish');
     
     // Admin User Routes
-    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [UsersController::class, 'show'])->name('users.show');
-    Route::get('/users/{user}/edit', [UsersController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
-    Route::post('/users/{user}/toggle-admin', [UsersController::class, 'toggleAdmin'])->name('users.toggle-admin');
-    Route::post('/users/{user}/toggle-ban', [UsersController::class, 'toggleBan'])->name('users.toggle-ban');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])->name('users.toggle-admin');
+    Route::post('/users/{user}/toggle-ban', [UserController::class, 'toggleBan'])->name('users.toggle-ban');
     
     // Admin Portfolio Management Routes
     Route::resource('skills', SkillController::class);

@@ -36,7 +36,6 @@ export default function Footer({ portfolioOwner }) {
 
     const quickLinks = [
         { name: t('footer.home'), href: '/' },
-        { name: t('footer.portfolio'), href: '/portfolio' },
         { name: t('footer.projects'), href: '/projects' },
         { name: t('footer.blog'), href: '/blog' },
         { name: t('footer.contact'), href: '/contact' },

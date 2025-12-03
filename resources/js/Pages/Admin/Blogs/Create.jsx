@@ -5,7 +5,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/Layouts/AdminLayout';
 import PostForm from '@/Components/Blog/PostForm';
-import ENDPOINTS from '@/api/endpoints';
+import { WEB_ENDPOINTS } from '@/api/endpoints';
 
 export default function Create({ auth, categories, tags }) {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ export default function Create({ auth, categories, tags }) {
   const handleSubmit = (formData) => {
     console.log('Submitting post with data:', formData);
     
-    router.post(ENDPOINTS.POSTS.ADMIN.STORE, formData, {
+    router.post(WEB_ENDPOINTS.ADMIN.POSTS.STORE, formData, {
       forceFormData: true,
       preserveState: true,
       preserveScroll: true,

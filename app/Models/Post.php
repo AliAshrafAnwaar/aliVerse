@@ -90,6 +90,15 @@ class Post extends Model
         return $query->orderBy('published_at', 'desc');
     }
 
+    public function scopeSearch($query, ?string $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('content', 'like', "%{$search}%")
+              ->orWhere('excerpt', 'like', "%{$search}%");
+        });
+    }
+
     // Accessors
     public function getReadingTimeAttribute($value)
     {

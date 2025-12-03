@@ -78,6 +78,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link href={route('profile.edit')}>
                                             {t('navigation.profile')}
                                         </Dropdown.Link>
+                                        {user.is_admin && (
+                                            <Dropdown.Link href={route('admin.dashboard')}>
+                                                {t('navigation.admin')}
+                                            </Dropdown.Link>
+                                        )}
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             {t('auth.logout')}
                                         </Dropdown.Link>
@@ -161,6 +166,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <ResponsiveNavLink href={route('profile.edit')}>
                                     {t('navigation.profile')}
                                 </ResponsiveNavLink>
+                                {user.is_admin && (
+                                    <ResponsiveNavLink href={route('admin.dashboard')}>
+                                        {t('navigation.admin')}
+                                    </ResponsiveNavLink>
+                                )}
                                 <ResponsiveNavLink
                                     method="post"
                                     href={route('logout')}

@@ -1,9 +1,30 @@
 import axios from 'axios';
 
 /**
- * Axios instance with default configuration
+ * API Version
  */
-const axiosInstance = axios.create({
+export const API_VERSION = 'v1';
+export const API_BASE_URL = `/api/${API_VERSION}`;
+
+/**
+ * Axios instance for API calls (JSON responses)
+ * Use this for data fetching without page reload
+ */
+const apiClient = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+});
+
+/**
+ * Axios instance for web calls (Inertia compatible)
+ * Use this for traditional form submissions
+ */
+export const webClient = axios.create({
     baseURL: '/',
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -14,42 +35,48 @@ const axiosInstance = axios.create({
 });
 
 /**
- * Request interceptor
+ * Add CSRF token to requests
  */
-axiosInstance.interceptors.request.use(
-    (config) => {
-        // Add CSRF token to requests
-        const token = document.head.querySelector('meta[name="csrf-token"]');
-        if (token) {
-            config.headers['X-CSRF-TOKEN'] = token.content;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+const addCsrfToken = (config) => {
+    const token = document.head.querySelector('meta[name="csrf-token"]');
+    if (token) {
+        config.headers['X-CSRF-TOKEN'] = token.content;
     }
-);
+    return config;
+};
 
 /**
- * Response interceptor
+ * Handle common errors
  */
-axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        if (error.response?.status === 401) {
-            // Handle unauthorized
-            window.location.href = '/login';
-        }
-        
-        if (error.response?.status === 419) {
-            // CSRF token mismatch - reload page
-            window.location.reload();
-        }
-        
+const handleError = (error) => {
+    if (error.response?.status === 401) {
+        // Handle unauthorized - redirect to login
+        window.location.href = '/login';
+    }
+    
+    if (error.response?.status === 419) {
+        // CSRF token mismatch - reload page
+        window.location.reload();
+    }
+
+    if (error.response?.status === 403) {
+        console.error('Forbidden: You do not have permission to perform this action.');
+    }
+
+    if (error.response?.status === 422) {
+        // Validation errors - return them for the form to handle
         return Promise.reject(error);
     }
-);
+    
+    return Promise.reject(error);
+};
 
-export default axiosInstance;
+// Apply interceptors to API client
+apiClient.interceptors.request.use(addCsrfToken, (error) => Promise.reject(error));
+apiClient.interceptors.response.use((response) => response, handleError);
+
+// Apply interceptors to web client
+webClient.interceptors.request.use(addCsrfToken, (error) => Promise.reject(error));
+webClient.interceptors.response.use((response) => response, handleError);
+
+export default apiClient;
