@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip index checks for non-PostgreSQL drivers
+        if (Schema::getConnection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         // Helper function to check if index exists
         $indexExists = function ($table, $indexName) {
             $connection = Schema::getConnection();
@@ -93,6 +98,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Skip index checks for non-PostgreSQL drivers
+        if (Schema::getConnection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         // Helper function to check if index exists
         $indexExists = function ($table, $indexName) {
             $connection = Schema::getConnection();
