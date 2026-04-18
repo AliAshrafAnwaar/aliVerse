@@ -15,15 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin user first so Ali gets user ID 1 (HomeController loads user 1)
+        $this->call([
+            AdminUserSeeder::class,
+        ]);
 
+        // Test user gets ID 2
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
         $this->call([
-            AdminUserSeeder::class,
+            ProfileSeeder::class,
             CategoryHierarchySeeder::class,
             TagSeeder::class,
             BlogSeeder::class,
