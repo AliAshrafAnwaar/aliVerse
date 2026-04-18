@@ -23,53 +23,64 @@ class BlogSeeder extends Seeder
             'is_admin' => true,
         ]);
 
-        // Create categories only if they don't exist
-        if (Category::count() === 0) {
-            $categories = [
-                [
-                    'name' => 'Web Development',
-                    'description' => 'Articles about web development, frontend, and backend technologies',
-                    'color' => '#3B82F6',
-                    'icon' => 'code',
-                    'sort_order' => 1,
-                ],
-                [
-                    'name' => 'Laravel',
-                    'description' => 'Tips, tricks, and tutorials for Laravel framework',
-                    'color' => '#EF4444',
-                    'icon' => 'laravel',
-                    'sort_order' => 2,
-                ],
-                [
-                    'name' => 'React',
-                    'description' => 'React.js tutorials, hooks, and best practices',
-                    'color' => '#61DAFB',
-                    'icon' => 'react',
-                    'sort_order' => 3,
-                ],
-            ];
+        // Find the Technology parent category (created by CategoryHierarchySeeder)
+        $technologyParent = Category::where('name', 'Technology')->where('type', 'main')->first();
+        $parentId = $technologyParent?->id;
 
-            foreach ($categories as $categoryData) {
-                Category::create($categoryData);
-            }
+        // Ensure required categories exist (use firstOrCreate so this works
+        // regardless of whether CategoryHierarchySeeder has run before)
+        $blogCategories = [
+            [
+                'name' => 'Web Development',
+                'description' => 'Articles about web development, frontend, and backend technologies',
+                'color' => '#3B82F6',
+                'icon' => 'code',
+                'sort_order' => 1,
+            ],
+            [
+                'name' => 'Laravel',
+                'description' => 'Tips, tricks, and tutorials for Laravel framework',
+                'color' => '#EF4444',
+                'icon' => 'laravel',
+                'sort_order' => 2,
+            ],
+            [
+                'name' => 'React',
+                'description' => 'React.js tutorials, hooks, and best practices',
+                'color' => '#61DAFB',
+                'icon' => 'react',
+                'sort_order' => 3,
+            ],
+        ];
+
+        foreach ($blogCategories as $categoryData) {
+            Category::firstOrCreate(
+                ['name' => $categoryData['name']],
+                array_merge($categoryData, [
+                    'type' => $parentId ? 'sub' : 'main',
+                    'parent_id' => $parentId,
+                    'is_active' => true,
+                ])
+            );
         }
 
-        // Create tags only if they don't exist
-        if (Tag::count() === 0) {
-            $tags = [
-                ['name' => 'PHP', 'color' => '#777BB4'],
-                ['name' => 'JavaScript', 'color' => '#F7DF1E'],
-                ['name' => 'React', 'color' => '#61DAFB'],
-                ['name' => 'Laravel', 'color' => '#FF2D20'],
-                ['name' => 'Tailwind CSS', 'color' => '#06B6D4'],
-                ['name' => 'PostgreSQL', 'color' => '#4169E1'],
-                ['name' => 'Docker', 'color' => '#2496ED'],
-                ['name' => 'TypeScript', 'color' => '#3178C6'],
-            ];
+        // Ensure required tags exist
+        $blogTags = [
+            ['name' => 'PHP', 'color' => '#777BB4'],
+            ['name' => 'JavaScript', 'color' => '#F7DF1E'],
+            ['name' => 'React', 'color' => '#61DAFB'],
+            ['name' => 'Laravel', 'color' => '#FF2D20'],
+            ['name' => 'Tailwind CSS', 'color' => '#06B6D4'],
+            ['name' => 'PostgreSQL', 'color' => '#4169E1'],
+            ['name' => 'Docker', 'color' => '#2496ED'],
+            ['name' => 'TypeScript', 'color' => '#3178C6'],
+        ];
 
-            foreach ($tags as $tagData) {
-                Tag::create($tagData);
-            }
+        foreach ($blogTags as $tagData) {
+            Tag::firstOrCreate(
+                ['name' => $tagData['name']],
+                array_merge($tagData, ['is_active' => true])
+            );
         }
 
         // Create sample posts only if they don't exist
