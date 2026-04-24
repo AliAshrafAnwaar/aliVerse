@@ -15,16 +15,17 @@ class SkillResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'category' => $this->category,
-            'proficiency' => $this->proficiency,
-            'years_experience' => $this->years_experience,
-            'is_featured' => $this->is_featured,
-            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : null,
-            'sort_order' => $this->sort_order,
-            'created_at' => $this->created_at->toISOString(),
-            'updated_at' => $this->updated_at->toISOString(),
+            'id'                => $this->id,
+            'name'              => $this->name,
+            'category'          => $this->category,
+            'proficiency_level' => (int) $this->proficiency_level,
+            'icon'              => $this->icon,
+            'image'             => $this->image_path ? asset('storage/' . $this->image_path) : null,
+            'image_path'        => $this->image_path,
+            'is_featured'       => (bool) $this->is_featured,
+            'sort_order'        => (int) $this->sort_order,
+            'created_at'        => $this->created_at?->toISOString(),
+            'updated_at'        => $this->updated_at?->toISOString(),
         ];
     }
 }

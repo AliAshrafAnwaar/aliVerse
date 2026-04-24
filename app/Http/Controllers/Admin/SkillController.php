@@ -6,103 +6,92 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSkillRequest;
 use App\Http\Requests\UpdateSkillRequest;
 use App\Models\Skill;
+use App\Services\SkillService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class SkillController extends Controller
 {
-    public function index(Request $request)
+    private const CATEGORIES = ['frontend', 'backend', 'tools', 'soft_skills'];
+
+    public function __construct(private readonly SkillService $skills) {}
+
+    public function index(Request $request): Response
     {
+        $this->authorize('viewAny', Skill::class);
+
         $skills = Skill::query()
-            ->when($request->search, fn($query, $search) => 
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('category', 'like', "%{$search}%")
-            )
-            ->when($request->category, fn($query, $category) => 
-                $query->where('category', $category)
-            )
+            ->when($request->string('search')->toString(), fn ($q, $s) => $q
+                ->where('name', 'like', "%{$s}%")
+                ->orWhere('category', 'like', "%{$s}%"))
+            ->when($request->string('category')->toString(), fn ($q, $c) => $q->where('category', $c))
             ->ordered()
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('Admin/Skills/Index', [
-            'skills' => $skills,
-            'filters' => $request->only('search', 'category'),
-            'categories' => ['frontend', 'backend', 'tools', 'soft_skills'],
+            'skills'     => $skills,
+            'filters'    => $request->only('search', 'category'),
+            'categories' => self::CATEGORIES,
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
+        $this->authorize('create', Skill::class);
+
         return Inertia::render('Admin/Skills/Create', [
-            'categories' => ['frontend', 'backend', 'tools', 'soft_skills'],
+            'categories' => self::CATEGORIES,
         ]);
     }
 
-    public function store(StoreSkillRequest $request)
+    public function store(StoreSkillRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $this->skills->create($request->validated(), $request->file('image'));
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('skills', 'public');
-            $data['image_path'] = $path;
-        }
-
-        Skill::create($data);
-
-        return redirect()->route('admin.skills.index')
-            ->with('success', 'Skill created successfully.');
+        return redirect()
+            ->route('admin.skills.index')
+            ->with('success', __('skills.flash.created'));
     }
 
-    public function show(Skill $skill)
+    public function show(Skill $skill): Response
     {
+        $this->authorize('view', $skill);
+
         return Inertia::render('Admin/Skills/Show', [
             'skill' => $skill,
         ]);
     }
 
-    public function edit(Skill $skill)
+    public function edit(Skill $skill): Response
     {
+        $this->authorize('update', $skill);
+
         return Inertia::render('Admin/Skills/Edit', [
-            'skill' => $skill,
-            'categories' => ['frontend', 'backend', 'tools', 'soft_skills'],
+            'skill'      => $skill,
+            'categories' => self::CATEGORIES,
         ]);
     }
 
-    public function update(UpdateSkillRequest $request, Skill $skill)
+    public function update(UpdateSkillRequest $request, Skill $skill): RedirectResponse
     {
-        $data = $request->validated();
+        $this->skills->update($skill, $request->validated(), $request->file('image'));
 
-        \Log::info('Updating skill: ' . $skill->id, $data);
-
-        if ($request->hasFile('image')) {
-            // delete old image if exists
-            if ($skill->image_path && Storage::disk('public')->exists($skill->image_path)) {
-                \Log::info('Deleting old image: ' . $skill->image_path);
-                Storage::disk('public')->delete($skill->image_path);
-            }
-            $path = $request->file('image')->store('skills', 'public');
-            $data['image_path'] = $path;
-            \Log::info('Uploading new image: ' . $path);
-        }
-
-        $skill->update($data);
-
-        \Log::info('Skill updated successfully.');
-
-        return redirect()->route('admin.skills.index')
-            ->with('success', 'Skill updated successfully.');
+        return redirect()
+            ->route('admin.skills.index')
+            ->with('success', __('skills.flash.updated'));
     }
 
-    public function destroy(Skill $skill)
+    public function destroy(Skill $skill): RedirectResponse
     {
-        if ($skill->image_path && Storage::disk('public')->exists($skill->image_path)) {
-            Storage::disk('public')->delete($skill->image_path);
-        }
-        $skill->delete();
+        $this->authorize('delete', $skill);
 
-        return redirect()->route('admin.skills.index')
-            ->with('success', 'Skill deleted successfully.');
+        $this->skills->delete($skill);
+
+        return redirect()
+            ->route('admin.skills.index')
+            ->with('success', __('skills.flash.deleted'));
     }
 }

@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             BlogSeeder::class,
             UpdateProjectUserSeeder::class,
+            SkillSeeder::class,
         ]);
     }
 }

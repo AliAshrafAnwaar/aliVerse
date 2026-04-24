@@ -1,0 +1,90 @@
+# Backend CRUD Compliance — Progress Log
+
+Scope: align existing backend with `.windsurf/workflows/backend-crud.md` (Phases 2–4).
+User explicitly opted out of Phase 1 (controller relocation / routing cleanup).
+Root-level controllers (Post/Project/Contact/Admin/Home/Portfolio/Dashboard/Reaction/Comment/Users)
+stay in place; we do NOT move them.
+
+## Resource status (per layer)
+
+Legend: [x] compliant, [~] partial, [ ] missing, [-] N/A
+
+| Resource          | Model | StoreReq | UpdateReq | Resource | Collection | Policy | Service | Observer | Factory | Seeder | Tests |
+|-------------------|-------|----------|-----------|----------|------------|--------|---------|----------|---------|--------|-------|
+| Skill             | [x]   | [x]      | [x]       | [x]      | [x]        | [x]    | [x]     | [-]      | [x]     | [x]    | [x]   |
+| Experience        | [~]   | [~]      | [~]       | [~]      | [ ]        | [ ]    | [ ]     | [-]      | [ ]     | [ ]    | [ ]   |
+| Education         | [~]   | [~]      | [~]       | [~]      | [ ]        | [ ]    | [ ]     | [-]      | [ ]     | [ ]    | [ ]   |
+| Testimonial       | [~]   | [~]      | [~]       | [~]      | [ ]        | [ ]    | [ ]     | [-]      | [ ]     | [ ]    | [ ]   |
+| Post              | [~]   | [~]      | [~]       | [~]      | [~]        | [~]    | [ ]     | [ ]      | [ ]     | [~]    | [ ]   |
+| Project           | [~]   | [~]      | [~]       | [~]      | [~]        | [~]    | [ ]     | [ ]      | [ ]     | [ ]    | [ ]   |
+| ContactSubmission | [~]   | [~]      | [ ]       | [~]      | [ ]        | [~]    | [ ]     | [-]      | [ ]     | [ ]    | [ ]   |
+| User (admin)      | [~]   | [-]      | [~]       | [~]      | [ ]        | [~]    | [ ]     | [-]      | [x]     | [~]    | [ ]   |
+| Comment           | [~]   | [ ]      | [ ]       | [~]      | [ ]        | [~]    | [ ]     | [-]      | [ ]     | [-]    | [ ]   |
+
+## Conventions reminder
+
+- FormRequest.authorize() must go through a Policy (`$this->user()?->can(...)`).
+- prepareForValidation() for slug/trim/bool normalisation.
+- attributes() and messages() with __('validation.custom.*') keys preferred.
+- API Resource.relations via whenLoaded; counts via whenCounted.
+- Collection present only for Api controllers.
+- Services only when logic is transactional / multi-model / reused.
+- Policies auto-discovered (App\Models\X → App\Policies\XPolicy).
+- Factory covers required columns; seeder registered in DatabaseSeeder.
+- Tests: list / create / update-own / cannot-update-foreign / delete-own / validation.
+
+## Reference implementation: Skill (completed)
+
+Files created/modified in this turn:
+
+- Model:      app/Models/Skill.php                               (added HasFactory)
+- Request:    app/Http/Requests/StoreSkillRequest.php            (rewritten: policy authz, prepareForValidation, attributes, messages)
+- Request:    app/Http/Requests/UpdateSkillRequest.php           (rewritten: same + unique ignore self)
+- Resource:   app/Http/Resources/SkillResource.php               (fixed: wrong column refs -> proficiency_level, icon; null-safe timestamps)
+- Resource:   app/Http/Resources/SkillCollection.php             (new)
+- Policy:     app/Policies/SkillPolicy.php                       (new: admin-only writes)
+- Service:    app/Services/SkillService.php                      (new: transactional create/update/delete + image swap)
+- Controller: app/Http/Controllers/Admin/SkillController.php     (rewritten: DI service, authorize(), flash keys, no Log::info)
+- Controller: app/Http/Controllers/Api/SkillController.php       (rewritten: DI service, SkillCollection, 201/204 via Resource)
+- Factory:    database/factories/SkillFactory.php                (new)
+- Seeder:     database/seeders/SkillSeeder.php                   (new)
+- Seeder:     database/seeders/DatabaseSeeder.php                (registered SkillSeeder)
+- Test:       tests/Feature/Admin/SkillTest.php                  (new: list, create, update, delete, non-admin blocked, guest blocked, 2 validation cases)
+
+Known follow-ups for Skill (deferred):
+- API feature test (tests/Feature/Api/SkillTest.php) — admin path covered; API path duplicates the logic through same service.
+- Translation keys used in attributes()/messages() and controller flash:
+    validation.attributes.skill.*, validation.custom.skill.*, skills.flash.{created,updated,deleted}
+  Add these to lang/en.php (and translate to ar). They gracefully fall back to the key string if missing, so tests still pass.
+- EnsureUserIsAdmin middleware uses Auth::user()->is_admin (accessor on User) — tests rely on the factory's role column; confirm UserFactory actually sets role (check before running suite).
+
+## Commands to verify Skill before moving to next resource
+
+```
+php artisan migrate:fresh --seed
+php artisan test --filter=SkillTest
+./vendor/bin/pint app/Http/Controllers/Admin/SkillController.php app/Http/Controllers/Api/SkillController.php app/Http/Requests/StoreSkillRequest.php app/Http/Requests/UpdateSkillRequest.php app/Http/Resources/SkillResource.php app/Http/Resources/SkillCollection.php app/Policies/SkillPolicy.php app/Services/SkillService.php app/Models/Skill.php database/factories/SkillFactory.php database/seeders/SkillSeeder.php
+```
+
+## Remaining work (in priority order)
+
+Same playbook to apply, resource by resource:
+
+1. Experience   — no ownership, admin-only. Mirror Skill end-to-end. Add migration check: any image/icon columns? Services only if image uploads present.
+2. Education    — same as Experience.
+3. Testimonial  — same pattern. client_image column may need service for file handling.
+4. ContactSubmission — read-only from admin side (list/show/markRead/delete). Skip Store request (public submission already exists). Need UpdateContactSubmissionRequest? No — admin only toggles read/unread. Service wraps bulk ops currently inline in controller.
+5. Post         — complex. Has owner (user_id), categories, tags (pivot), featured_image uploads, publish/unpublish/toggleFeatured. Service MUST wrap tag sync + image swap in transaction. PostPolicy already exists, verify invocation in root PostController.
+6. Project      — similar: gallery images (project_images pivot), technologies JSON. ProjectPolicy exists. Service must handle gallery add/delete/replace.
+7. User (admin) — UpdateUserRequest exists; add UserResource relations handling; UserPolicy is present. Services probably unnecessary — delegation to model is fine. Add admin feature tests.
+8. Comment, Reaction — light: add factories, basic tests only; no admin CRUD UI beyond moderation endpoints.
+
+Sweeping fixes needed across all models (do once):
+- Audit every model: ensure SoftDeletes imported when migration has deleted_at; remove $appends that do real DB work; confirm $fillable matches migration columns.
+- Add missing policies: ExperiencePolicy, EducationPolicy, TestimonialPolicy (admin-only writes, same as SkillPolicy).
+- Add missing Collections: Experience, Education, Testimonial, ContactSubmission, User, Category, Tag, Comment — only if the matching Api controller exists and is wired.
+- Route audit: replace ad-hoc admin routes for Post/Project/User with Route::resource where the controller is resource-shaped. (User opted OUT of this in Phase 1; revisit only if approved.)
+
+Strongly recommended next step:
+- Before generalising, run the Skill verification commands above to confirm the pattern is green end-to-end. If test fails because UserFactory doesn't set 'role', patch UserFactory once and every subsequent test benefits.
+

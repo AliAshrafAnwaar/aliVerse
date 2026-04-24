@@ -35,11 +35,11 @@ class PostController extends Controller
     /**
      * Display the specified post.
      */
-    public function show(Post $post): PostResource|JsonResponse
+    public function show(Request $request, Post $post): PostResource|JsonResponse
     {
         $this->authorize('view', $post);
 
-        if (!$post->isPublished() && !auth()->user()?->isAdmin()) {
+        if (!$post->isPublished() && !$request->user()?->isAdmin()) {
             return response()->json(['message' => 'Post not found'], 404);
         }
 
@@ -71,7 +71,7 @@ class PostController extends Controller
             $data['published_at'] = now();
         }
 
-        $post = auth()->user()->posts()->create($data);
+        $post = $request->user()->posts()->create($data);
 
         if (isset($data['tags'])) {
             $post->tags()->sync($data['tags']);
